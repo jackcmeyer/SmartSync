@@ -41,10 +41,10 @@ while [[ $# -gt 0 ]] ; do
 	    echo "  different services. It won't run them by default."
 	    echo
 	    echo "  Current Services:"
-	    echo "    - config-service"
-	    echo "    - eureka-service"
-	    echo "    - hystrix-dashboard"
-	    echo "    - zipkin-service"
+	    echo "    - smartsync-config-service"
+	    echo "    - smartsync-eureka-service"
+	    echo "    - smartsync-hystrix-dashboard"
+	    echo "    - smartsync-zipkin-service"
 	    exit
 	    ;;
     esac
@@ -52,49 +52,49 @@ while [[ $# -gt 0 ]] ; do
 done
 
 echo -e "${C_YEL}Starting SmartSync services..."
-echo -e "    config-services:    8888"
-echo -e "    eureka-services:    8761"
-echo -e "    hystrix-dashboard:  8010"
-echo -e "    zipkin-service:     9411${C_NRM}"
+echo -e "    smartsync-config-services:    8888"
+echo -e "    smartsync-eureka-services:    8761"
+echo -e "    smartsync-hystrix-dashboard:  8010"
+echo -e "    smartsync-zipkin-service:     9411${C_NRM}"
 sleep 2
 
 # Run maven package on services
 if [ "$SS_BUILD" = true ] ; then
     echo -e "${C_YEL}Running Maven packages...${C_NRM}"
-    echo -e "${C_YEL}cd config-service; mvn package${C_NRM}"
-    cd config-service
+    echo -e "${C_YEL}cd smartsync-config-service; mvn package${C_NRM}"
+    cd smartsync-config-service
     mvn package
-    echo -e "${C_YEL}cd eureka-service; mvn package${C_NRM}"
-    cd ../eureka-service
+    echo -e "${C_YEL}cd smartsync-eureka-service; mvn package${C_NRM}"
+    cd ../smartsync-eureka-service
     mvn package
-    echo -e "${C_YEL}cd hystrix-dashboard; mvn package${C_NRM}"
-    cd ../hystrix-dashboard
+    echo -e "${C_YEL}cd smartsync-hystrix-dashboard; mvn package${C_NRM}"
+    cd ../smartsync-hystrix-dashboard
     mvn package
-    echo -e "${C_YEL}cd zipkin-service; mvn package${C_NRM}"
-    cd ../zipkin-service
+    echo -e "${C_YEL}cd smartsync-zipkin-service; mvn package${C_NRM}"
+    cd ../smartsync-zipkin-service
     mvn package
     cd ..
 fi
 
-echo -e "${C_YEL}java -jar config-service/target/config-service-0.0.1-SNAPSHOT.jar${C_NRM}"
-java -jar config-service/target/config-service-0.0.1-SNAPSHOT.jar &
+echo -e "${C_YEL}java -jar smartsync-config-service/target/config-service-0.0.1-SNAPSHOT.jar${C_NRM}"
+java -jar smartsync-config-service/target/smartsync-config-service-0.0.1-SNAPSHOT.jar &
 PID1=$!
 echo $PID1
 sleep 10
 
-echo -e "${C_YEL}java -jar eureka-service/target/eureka-service-0.0.1-SNAPSHOT.jar${C_NRM}"
-java -jar eureka-service/target/eureka-service-0.0.1-SNAPSHOT.jar &
+echo -e "${C_YEL}java -jar smartsync-eureka-service/target/eureka-service-0.0.1-SNAPSHOT.jar${C_NRM}"
+java -jar smartsync-eureka-service/target/smartsync-eureka-service-0.0.1-SNAPSHOT.jar &
 PID2=$!
 echo $PID2
 sleep 10
 
-echo -e "${C_YEL}java -jar hystrix-dashboard/target/hystrix-dashboard-0.0.1-SNAPSHOT.jar${C_NRM}"
-java -jar hystrix-dashboard/target/hystrix-dashboard-0.0.1-SNAPSHOT.jar &
+echo -e "${C_YEL}java -jar smartsync-hystrix-dashboard/target/hystrix-dashboard-0.0.1-SNAPSHOT.jar${C_NRM}"
+java -jar smartsync-hystrix-dashboard/target/smartsync-hystrix-dashboard-0.0.1-SNAPSHOT.jar &
 PID3=$!
 echo $PID3
 
-echo -e "${C_YEL}java -jar zipkin-service/target/zipkin-service-0.0.1-SNAPSHOT.jar${C_NRM}"
-java -jar zipkin-service/target/zipkin-service-0.0.1-SNAPSHOT.jar &
+echo -e "${C_YEL}java -jar smartsync-zipkin-service/target/zipkin-service-0.0.1-SNAPSHOT.jar${C_NRM}"
+java -jar smartsync-zipkin-service/target/smartsync-zipkin-service-0.0.1-SNAPSHOT.jar &
 PID4=$!
 echo $PID4
 
