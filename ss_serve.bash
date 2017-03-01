@@ -13,6 +13,8 @@ handler()
     kill -9 $PID3
     echo "kill -9 $PID4"
     kill -9 $PID4
+    echo "kill -9 $PID5"
+    kill -9 $PID5
 }
 
 # Colors
@@ -45,6 +47,7 @@ while [[ $# -gt 0 ]] ; do
 	    echo "    - smartsync-eureka-service"
 	    echo "    - smartsync-hystrix-dashboard"
 	    echo "    - smartsync-zipkin-service"
+      echo "    - smartsync-api-gateway"
 	    exit
 	    ;;
     esac
@@ -55,7 +58,8 @@ echo -e "${C_YEL}Starting SmartSync services..."
 echo -e "    smartsync-config-services:    8888"
 echo -e "    smartsync-eureka-services:    8761"
 echo -e "    smartsync-hystrix-dashboard:  8010"
-echo -e "    smartsync-zipkin-service:     9411${C_NRM}"
+echo -e "    smartsync-zipkin-service:     9411"
+echo -e "    smartsync-api-gateway:        8000${C_NRM}"
 sleep 2
 
 # Run maven package on services
@@ -74,28 +78,40 @@ if [ "$SS_BUILD" = true ] ; then
     cd ../smartsync-zipkin-service
     mvn package
     cd ..
+    echo -e "${C_YEL}cd smartsync-api-gateway; mvn package${C_NRM}"
+    cd ../smartsync-api-gateway
+    mvn package
+    cd ..
 fi
 
-echo -e "${C_YEL}java -jar smartsync-config-service/target/config-service-0.0.1-SNAPSHOT.jar${C_NRM}"
+echo -e "${C_YEL}java -jar smartsync-config-service/target/smartsync-config-service-0.0.1-SNAPSHOT.jar${C_NRM}"
 java -jar smartsync-config-service/target/smartsync-config-service-0.0.1-SNAPSHOT.jar &
 PID1=$!
 echo $PID1
-sleep 10
+sleep 20
 
-echo -e "${C_YEL}java -jar smartsync-eureka-service/target/eureka-service-0.0.1-SNAPSHOT.jar${C_NRM}"
+echo -e "${C_YEL}java -jar smartsync-eureka-service/target/smartsync-eureka-service-0.0.1-SNAPSHOT.jar${C_NRM}"
 java -jar smartsync-eureka-service/target/smartsync-eureka-service-0.0.1-SNAPSHOT.jar &
 PID2=$!
 echo $PID2
-sleep 10
+sleep 20
 
-echo -e "${C_YEL}java -jar smartsync-hystrix-dashboard/target/hystrix-dashboard-0.0.1-SNAPSHOT.jar${C_NRM}"
+echo -e "${C_YEL}java -jar smartsync-hystrix-dashboard/target/smartsync-hystrix-dashboard-0.0.1-SNAPSHOT.jar${C_NRM}"
 java -jar smartsync-hystrix-dashboard/target/smartsync-hystrix-dashboard-0.0.1-SNAPSHOT.jar &
 PID3=$!
 echo $PID3
+sleep 10
 
-echo -e "${C_YEL}java -jar smartsync-zipkin-service/target/zipkin-service-0.0.1-SNAPSHOT.jar${C_NRM}"
+echo -e "${C_YEL}java -jar smartsync-zipkin-service/target/smartsync-zipkin-service-0.0.1-SNAPSHOT.jar${C_NRM}"
 java -jar smartsync-zipkin-service/target/smartsync-zipkin-service-0.0.1-SNAPSHOT.jar &
 PID4=$!
 echo $PID4
+sleep 10
+
+
+echo -e "${C_YEL}java -jar smartsync-api-gateway/target/smartsync-api-gateway-0.0.1-SNAPSHOT.jar${C_NRM}"
+java -jar smartsync-api-gateway/target/smartsync-api-gateway-0.0.1-SNAPSHOT.jar &
+PID5=$!
+echo $PID5
 
 wait
