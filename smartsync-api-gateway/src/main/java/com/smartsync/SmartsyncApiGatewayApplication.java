@@ -14,3 +14,4 @@ public class SmartsyncApiGatewayApplication {
 		SpringApplication.run(SmartsyncApiGatewayApplication.class, args);
 	}
 }
+

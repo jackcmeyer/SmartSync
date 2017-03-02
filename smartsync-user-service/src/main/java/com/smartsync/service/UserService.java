@@ -1,8 +1,11 @@
 package com.smartsync.service;
 
+import com.smartsync.model.User;
 import com.smartsync.model.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * @author Jack Meyer (jackcmeyer@gmail.com)
@@ -52,12 +55,14 @@ public class UserService {
      */
     public User addUser(User user) {
         User savedUser = this.userRepository.save(user);
-        returns savedUser;
+        return savedUser;
     }
 
     public User deleteUser(String id) {
         User deletedUser = this.userRepository.findByUserId(id);
         this.userRepository.delete(id);
+
+        return deletedUser;
     }
 
 }

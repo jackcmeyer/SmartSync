@@ -1,8 +1,11 @@
 package com.smartsync.controller;
 
+import com.smartsync.model.User;
 import com.smartsync.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author Jack Meyer
@@ -26,7 +29,8 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/{id}", produces = "application/json")
     public User getUserById(@PathVariable("id") String id) {
-        return this.userService.getUserById();
+
+        return this.userService.getUserById(id);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/", produces = "application/json")
@@ -36,7 +40,7 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}", produces = "application/json")
     public User deleteUser(@PathVariable("id") String id) {
-        return this.userService;
+        return this.userService.deleteUser(id);
     }
 
 }

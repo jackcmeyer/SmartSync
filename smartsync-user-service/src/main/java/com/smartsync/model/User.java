@@ -1,5 +1,6 @@
 package com.smartsync.model;
 
+import javax.persistence.Entity;
 import javax.persistence.Id;
 
 /**
@@ -7,6 +8,7 @@ import javax.persistence.Id;
  *
  * The User Model
  */
+@Entity
 public class User {
 
     /**
