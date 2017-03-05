@@ -11,8 +11,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 public class UserNotFoundException extends RuntimeException {
 
+    /**
+     * The url which the error occured
+     */
     private String url;
 
+    /**
+     * The error message
+     */
     private String message;
 
     public UserNotFoundException(String message, String url) {

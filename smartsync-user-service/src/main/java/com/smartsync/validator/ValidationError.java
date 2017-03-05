@@ -4,12 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by jack on 3/5/17.
+ * @author Jack Meyer
+ *
+ * The Validation Error
  */
 public class ValidationError {
 
+    /**
+     * The list of errors
+     */
     private List<String> errors = new ArrayList<>();
 
+    /**
+     * The error message
+     */
     private final String errorMessage;
 
 

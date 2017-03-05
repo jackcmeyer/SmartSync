@@ -10,7 +10,9 @@ import org.springframework.validation.Validator;
 import org.apache.commons.validator.*;
 
 /**
- * Created by jack on 3/5/17.
+ * @author Jack Meyer
+ *
+ * The User Validator
  */
 public class UserValidator implements Validator {
 
@@ -18,6 +20,11 @@ public class UserValidator implements Validator {
         return UserDTO.class.equals(clazz);
     }
 
+    /**
+     * Validates the input
+     * @param object the user to validate
+     * @param errors the errors
+     */
     public void validate(Object object, Errors errors) {
 
         UserDTO user = (UserDTO) object;

@@ -3,7 +3,9 @@ package com.smartsync.error;
 import java.util.Date;
 
 /**
- * Created by jack on 3/5/17.
+ * @author Jack Meyer
+ *
+ * The basic Error Info Container
  */
 public class ErrorInfo {
 

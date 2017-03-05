@@ -1,12 +1,9 @@
 package com.smartsync.dto;
 
-import org.hibernate.validator.constraints.NotBlank;
-import org.hibernate.validator.constraints.NotEmpty;
-
-import javax.validation.constraints.NotNull;
-
 /**
- * Created by jack on 3/5/17.
+ * @author Jack Meyer
+ *
+ * The User DTO
  */
 public class UserDTO {
 

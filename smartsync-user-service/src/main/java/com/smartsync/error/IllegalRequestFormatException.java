@@ -22,6 +22,9 @@ public class IllegalRequestFormatException extends RuntimeException {
      */
     private String url;
 
+    /**
+     * The list of errors
+     */
     private ValidationError errors;
 
     public IllegalRequestFormatException(String message, String url, ValidationError errors) {

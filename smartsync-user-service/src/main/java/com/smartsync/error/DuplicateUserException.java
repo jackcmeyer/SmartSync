@@ -1,12 +1,20 @@
 package com.smartsync.error;
 
 /**
- * Created by jack on 3/5/17.
+ * @author Jack Meyer
+ *
+ * The Duplicate User Exception
  */
 public class DuplicateUserException extends RuntimeException{
 
+    /**
+     * The error message
+     */
     private String message;
 
+    /**
+     * The url which the error occurred at
+     */
     private String url;
 
     public DuplicateUserException(String message, String url) {

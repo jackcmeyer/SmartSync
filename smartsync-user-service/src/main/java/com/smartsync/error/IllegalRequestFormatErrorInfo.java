@@ -6,23 +6,37 @@ import org.springframework.validation.Errors;
 import java.util.List;
 
 /**
- * Created by jack on 3/5/17.
+ * @author Jack Meyer
+ *
+ * The Illegal Request Format Error Info Container
  */
 public class IllegalRequestFormatErrorInfo {
 
+    /**
+     * The name of the error
+     */
     private String name;
 
+    /**
+     * The error message
+     */
     private String message;
 
+    /**
+     * The url at which the error ocurred
+     */
     private String url;
 
-    private ValidationError errors;
+    /**
+     * The validation errors
+     */
+    private List<String> errors;
 
     public IllegalRequestFormatErrorInfo(String name, String messgae, String url, ValidationError errors) {
         this.name = name;
         this.message = messgae;
         this.url = url;
-        this.errors = errors;
+        this.errors = errors.getErrors();
     }
 
     public IllegalRequestFormatErrorInfo() {
@@ -53,11 +67,11 @@ public class IllegalRequestFormatErrorInfo {
         this.url = url;
     }
 
-    public ValidationError getErrors() {
+    public List<String> getErrors() {
         return errors;
     }
 
-    public void setErrors(ValidationError errors) {
+    public void setErrors(List<String> errors) {
         this.errors = errors;
     }
 }

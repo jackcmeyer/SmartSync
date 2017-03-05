@@ -58,6 +58,13 @@ public class UserService {
         return savedUser;
     }
 
+    /**
+     * Deletes a user from the database
+     *
+     * @param id the id to delete
+     *
+     * @return the deleted user
+     */
     public User deleteUser(String id) {
         User deletedUser = this.userRepository.findByUserId(id);
 

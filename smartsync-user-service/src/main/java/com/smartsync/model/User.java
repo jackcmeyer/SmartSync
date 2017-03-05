@@ -50,11 +50,27 @@ public class User {
      */
     private int role;
 
+    /**
+     * The date that the user was created
+     */
     private Date created;
 
+    /**
+     * The date that the user was last updated
+     */
     private Date lastUpdated;
 
 
+    /**
+     * Constructor which uses parameters to create the new user
+     * @param userId
+     * @param fullName
+     * @param givenName
+     * @param familyName
+     * @param imageURL
+     * @param email
+     * @param role
+     */
     public User(String userId, String fullName, String givenName, String familyName, String imageURL, String email,
                 int role) {
         this.userId = userId;
@@ -68,6 +84,10 @@ public class User {
         this.lastUpdated = new Date();
     }
 
+    /**
+     * Constructor which users the DTO to create the new user
+     * @param userDTO
+     */
     public User(UserDTO userDTO) {
         this.userId = userDTO.getUserId();
         this.fullName = userDTO.getFullName();
