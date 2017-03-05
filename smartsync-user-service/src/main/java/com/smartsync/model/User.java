@@ -2,6 +2,7 @@ package com.smartsync.model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.util.Date;
 
 /**
  * @author Jack Meyer (jackcmeyer@gmail.com)
@@ -47,6 +48,10 @@ public class User {
      */
     private int role;
 
+    private Date created;
+
+    private Date lastUpdated;
+
 
     public User(String userId, String fullName, String givenName, String familyName, String imageURL, String email,
                 int role) {
@@ -57,6 +62,8 @@ public class User {
         this.imageURL = imageURL;
         this.email = email;
         this.role = role;
+        this.created = new Date();
+        this.lastUpdated = new Date();
     }
 
     public User() {
@@ -117,5 +124,21 @@ public class User {
 
     public void setRole(int role) {
         this.role = role;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public Date getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 }
