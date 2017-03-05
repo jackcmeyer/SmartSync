@@ -60,9 +60,18 @@ public class UserService {
 
     public User deleteUser(String id) {
         User deletedUser = this.userRepository.findByUserId(id);
-        this.userRepository.delete(id);
 
-        return deletedUser;
+        if(deletedUser == null) {
+            return null;
+        }
+
+        else {
+            this.userRepository.delete(id);
+
+            return deletedUser;
+        }
+
+
     }
 
 }

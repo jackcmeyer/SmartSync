@@ -1,23 +1,18 @@
-package com.smartsync.model;
+package com.smartsync.dto;
 
-import com.smartsync.dto.UserDTO;
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import java.util.Date;
+import javax.validation.constraints.NotNull;
 
 /**
- * @author Jack Meyer (jackcmeyer@gmail.com)
- *
- * The User Model
+ * Created by jack on 3/5/17.
  */
-@Entity
-public class User {
+public class UserDTO {
 
     /**
      * The user id for the user. This is also the id for the user's google account
      */
-    @Id
     private String userId;
 
     /**
@@ -48,15 +43,10 @@ public class User {
     /**
      * The user's role. 0 for normal user, 1 for super user (admin)
      */
-    private int role;
+    private String role;
 
-    private Date created;
-
-    private Date lastUpdated;
-
-
-    public User(String userId, String fullName, String givenName, String familyName, String imageURL, String email,
-                int role) {
+    public UserDTO(String userId, String fullName, String givenName, String familyName, String imageURL, String email,
+                   String role) {
         this.userId = userId;
         this.fullName = fullName;
         this.givenName = givenName;
@@ -64,24 +54,10 @@ public class User {
         this.imageURL = imageURL;
         this.email = email;
         this.role = role;
-        this.created = new Date();
-        this.lastUpdated = new Date();
     }
 
-    public User(UserDTO userDTO) {
-        this.userId = userDTO.getUserId();
-        this.fullName = userDTO.getFullName();
-        this.givenName = userDTO.getGivenName();
-        this.familyName = userDTO.getFamilyName();
-        this.imageURL = userDTO.getImageURL();
-        this.email = userDTO.getEmail();
-        this.role = Integer.parseInt(userDTO.getRole());
-        this.created = new Date();
-        this.lastUpdated = new Date();
-    }
-
-    public User() {
-        // empty constructor
+    public UserDTO() {
+        // default constructor
     }
 
     public String getUserId() {
@@ -132,27 +108,24 @@ public class User {
         this.email = email;
     }
 
-    public int getRole() {
+    public String getRole() {
         return role;
     }
 
-    public void setRole(int role) {
+    public void setRole(String role) {
         this.role = role;
     }
 
-    public Date getCreated() {
-        return created;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
-    }
-
-    public Date getLastUpdated() {
-        return lastUpdated;
-    }
-
-    public void setLastUpdated(Date lastUpdated) {
-        this.lastUpdated = lastUpdated;
+    @Override
+    public String toString() {
+        return "UserDTO {" +
+                "\n\tuserId='" + userId + '\'' +
+                ", \n\tfullName='" + fullName + '\'' +
+                ", \n\tgivenName='" + givenName + '\'' +
+                ", \n\tfamilyName='" + familyName + '\'' +
+                ", \n\timageURL='" + imageURL + '\'' +
+                ", \n\temail='" + email + '\'' +
+                ", \n\trole=" + role +
+                "\n}";
     }
 }
