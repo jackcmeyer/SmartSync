@@ -81,7 +81,7 @@ public class UserController {
 
 
         if(errors.hasErrors()) {
-            throw new IllegalRequestFormatException("Could not add user new user.", "/users/", validationError);
+            throw new IllegalRequestFormatException("Could not add user.", "/users/", validationError);
         }
 
         if(this.userService.getUserById(userDTO.getUserId()) != null) {
@@ -99,6 +99,23 @@ public class UserController {
         User user = new User(userDTO);
         User savedUser = this.userService.addUser(user);
         return ResponseEntity.ok(savedUser);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/", produces = "application/json")
+    public ResponseEntity updateUser(@RequestBody UserDTO userDTO, Errors errors) {
+
+        UserValidator userValidator = new UserValidator();
+        userValidator.validate(userDTO, errors);
+
+        ValidationError validationError = ValidationErrorBuilder.fromBindErrors(errors);
+
+        if(errors.hasErrors()) {
+            throw new IllegalRequestFormatException("Could not update user.", "/users/", validationError);
+        }
+
+        User updatedUser = this.userService.updateUser(new User(userDTO));
+
+        return ResponseEntity.ok(updatedUser);
     }
 
     /**

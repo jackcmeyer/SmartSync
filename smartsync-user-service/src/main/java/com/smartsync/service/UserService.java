@@ -5,6 +5,8 @@ import com.smartsync.model.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -56,6 +58,33 @@ public class UserService {
     public User addUser(User user) {
         User savedUser = this.userRepository.save(user);
         return savedUser;
+    }
+
+    /**
+     * Updates the user
+     * @param user the user to udate
+     * @return the new user
+     */
+    @Transactional
+    public User updateUser(User user) {
+
+        User savedUser = this.userRepository.findByUserId(user.getUserId());
+
+
+
+
+        savedUser.setEmail(user.getEmail());
+        savedUser.setFamilyName(user.getFamilyName());
+        savedUser.setFullName(user.getFullName());
+        savedUser.setGivenName(user.getFamilyName());
+        savedUser.setImageURL(user.getImageURL());
+        savedUser.setRole(user.getRole());
+        savedUser.setUserId(user.getUserId());
+
+        savedUser.setLastUpdated(new Date());
+
+        return savedUser;
+
     }
 
     /**
