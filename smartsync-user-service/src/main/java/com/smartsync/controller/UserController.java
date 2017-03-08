@@ -101,7 +101,7 @@ public class UserController {
         return ResponseEntity.ok(savedUser);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/", produces = "application/json")
+    @RequestMapping(method = RequestMethod.PUT, value = "/", produces = "application/json")
     public ResponseEntity updateUser(@RequestBody UserDTO userDTO, Errors errors) {
 
         UserValidator userValidator = new UserValidator();
