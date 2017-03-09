@@ -1,25 +1,11 @@
-package com.smartsync.model;
-
-import com.smartsync.dto.HouseholdDTO;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import java.util.Date;
+package com.smartsync.dto;
 
 /**
  * @author Jack Meyer (jackcmeyer@gmail.com)
  *
- * The household model
+ * The household data transfer object
  */
-@Entity
-public class Household {
-
-    /**
-     * The id of the household
-     */
-    @Id @GeneratedValue
-    private Long householdId;
+public class HouseholdDTO {
 
     /**
      * The nickname of the household
@@ -64,19 +50,8 @@ public class Household {
      */
     private int zipCode;
 
-    /**
-     * The last updated date
-     */
-    private Date lastUpdated;
-
-    /**
-     * The created date
-     */
-    private Date created;
-
-    public Household(String householdName, String ownerId, String firstAddressLine,
-                     String secondAddressLine, String city, String state, int zipCode) {
-
+    public HouseholdDTO(String householdName, String ownerId, String firstAddressLine, String secondAddressLine,
+                        String city, String state, int zipCode) {
         this.householdName = householdName;
         this.ownerId = ownerId;
         this.firstAddressLine = firstAddressLine;
@@ -84,32 +59,10 @@ public class Household {
         this.city = city;
         this.state = state;
         this.zipCode = zipCode;
-        this.created = new Date();
-        this.lastUpdated = new Date();
     }
 
-    public Household(HouseholdDTO householdTO) {
-        this.householdName = householdTO.getHouseholdName();
-        this.ownerId = householdTO.getOwnerId();
-        this.firstAddressLine = householdTO.getFirstAddressLine();
-        this.secondAddressLine = householdTO.getSecondAddressLine();
-        this.city = householdTO.getCity();
-        this.state = householdTO.getState();
-        this.zipCode = householdTO.getZipCode();
-        this.created = new Date();
-        this.lastUpdated = new Date();
-    }
-
-    public Household() {
+    public HouseholdDTO() {
         // default constructor
-    }
-
-    public Long getHouseholdId() {
-        return householdId;
-    }
-
-    public void setHouseholdId(Long householdId) {
-        this.householdId = householdId;
     }
 
     public String getHouseholdName() {
@@ -166,21 +119,5 @@ public class Household {
 
     public void setZipCode(int zipCode) {
         this.zipCode = zipCode;
-    }
-
-    public Date getLastUpdated() {
-        return lastUpdated;
-    }
-
-    public void setLastUpdated(Date lastUpdated) {
-        this.lastUpdated = lastUpdated;
-    }
-
-    public Date getCreated() {
-        return created;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
     }
 }

@@ -2,8 +2,6 @@ package com.smartsync.model;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-
 /**
  * @author Jack Meyer
  *
@@ -16,8 +14,8 @@ public interface HouseholdRepository extends JpaRepository<Household, String> {
      *
      * @param id the id to find by
      *
-     * @return a list of households
+     * @return a household
      */
-    List<String> findByHouseholdId(String id);
+    Household findByHouseholdId(Long id);
 
 }
