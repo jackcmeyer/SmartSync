@@ -15,6 +15,10 @@ handler()
     kill -9 $PID4
     echo "kill -9 $PID5"
     kill -9 $PID5
+    echo "kill -9 $PID6"
+    kill -9 $PID6
+    echo "kill -9 $PID7"
+    kill -9 $PID7
 }
 
 # Colors
@@ -48,6 +52,8 @@ while [[ $# -gt 0 ]] ; do
 	    echo "    - smartsync-hystrix-dashboard"
 	    echo "    - smartsync-zipkin-service"
       echo "    - smartsync-api-gateway"
+      echo "    - smartsync-user-service"
+      echo "    -smartsync-household-service"
 	    exit
 	    ;;
     esac
@@ -59,7 +65,9 @@ echo -e "    smartsync-config-services:    8888"
 echo -e "    smartsync-eureka-services:    8761"
 echo -e "    smartsync-hystrix-dashboard:  8010"
 echo -e "    smartsync-zipkin-service:     9411"
-echo -e "    smartsync-api-gateway:        8000${C_NRM}"
+echo -e "    smartsync-api-gateway:        8000"
+echo -e "    smartsync-user-service:       8001"
+echo -e "    smartsync-household-service   8002${C_NRM}"
 sleep 2
 
 # Run maven package on services
@@ -77,9 +85,13 @@ if [ "$SS_BUILD" = true ] ; then
     echo -e "${C_YEL}cd smartsync-zipkin-service; mvn package${C_NRM}"
     cd ../smartsync-zipkin-service
     mvn package
-    cd ..
     echo -e "${C_YEL}cd smartsync-api-gateway; mvn package${C_NRM}"
     cd ../smartsync-api-gateway
+    echo -e "${C_YEL}cd smartsync-user-service; mvn package${C_NRM}"
+    cd ../smartsync-user-service
+    mvn package
+    echo -e "${C_YEL}cd smartsync-household-service; mvn package${C_NRM}"
+    cd ../smartsync-household-service
     mvn package
     cd ..
 fi
@@ -113,5 +125,15 @@ echo -e "${C_YEL}java -jar smartsync-api-gateway/target/smartsync-api-gateway-0.
 java -jar smartsync-api-gateway/target/smartsync-api-gateway-0.0.1-SNAPSHOT.jar &
 PID5=$!
 echo $PID5
+
+echo -e "${C_YEL}java -jar smartsync-user-serivce/target/smartsync-user-service-0.0.1-SNAPSHOT.jar${C_NRM}"
+java -jar smartsync-user-service/target/smartsync-user-service-0.0.1-SNAPSHOT.jar &
+PID6=$!
+echo $PID6
+
+echo -e "${C_YEL}java -jar smartsync-household-service/target/smartsync-household-service-0.0.1-SNAPSHOT.jar${C_NRM}"
+java -jar smartsync-household-service/target/smartsync-household-service-0.0.1-SNAPSHOT.jar &
+PID7=$!
+echo $PID7
 
 wait
