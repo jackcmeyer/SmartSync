@@ -1,8 +1,10 @@
+.DS_Store
+*/.DS_STORE
+
 ### IntelliJ IDEA ###
-.idea
+.idea/*
 *.iws
 *.iml
 *.ipr
 
-./idea
 
