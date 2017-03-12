@@ -16,7 +16,7 @@ public class HouseholdDTO {
     /**
      * The userId of the owner of the household
      */
-    private String ownerId;
+    private Long ownerId;
 
     /**
      * The first address line
@@ -50,7 +50,7 @@ public class HouseholdDTO {
      */
     private int zipCode;
 
-    public HouseholdDTO(String householdName, String ownerId, String firstAddressLine, String secondAddressLine,
+    public HouseholdDTO(String householdName, Long ownerId, String firstAddressLine, String secondAddressLine,
                         String city, String state, int zipCode) {
         this.householdName = householdName;
         this.ownerId = ownerId;
@@ -73,11 +73,11 @@ public class HouseholdDTO {
         this.householdName = householdName;
     }
 
-    public String getOwnerId() {
+    public Long getOwnerId() {
         return ownerId;
     }
 
-    public void setOwnerId(String ownerId) {
+    public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
     }
 

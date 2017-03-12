@@ -18,14 +18,14 @@ public class HouseholdUserLookup {
     /**
      * The user id
      */
-    private String userId;
+    private Long userId;
 
     /**
      * The household id
      */
-    private String householdId;
+    private Long householdId;
 
-    public HouseholdUserLookup(String userId, String householdId) {
+    public HouseholdUserLookup(Long userId, Long householdId) {
         this.userId = userId;
         this.householdId = householdId;
     }
@@ -43,19 +43,19 @@ public class HouseholdUserLookup {
         this.id = id;
     }
 
-    public String getUserId() {
+    public Long getUserId() {
         return this.userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
-    public String getHouseholdId() {
+    public Long getHouseholdId() {
         return householdId;
     }
 
-    public void setHouseholdId(String householdId) {
+    public void setHouseholdId(Long householdId) {
         this.householdId = householdId;
     }
 }

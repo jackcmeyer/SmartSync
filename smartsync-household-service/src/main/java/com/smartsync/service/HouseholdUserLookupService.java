@@ -1,8 +1,14 @@
 package com.smartsync.service;
 
+import com.smartsync.model.HouseholdUserLookup;
 import com.smartsync.model.HouseholdUserLookupRepository;
+import communication.UserServiceCommunication;
+import model.UserPOJO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Jack Meyer (jackcmeyer@gmail.com)
@@ -17,5 +23,33 @@ public class HouseholdUserLookupService {
 
     public HouseholdUserLookupService() {
 
+    }
+
+    public HouseholdUserLookup addUserToHouseHold(Long userId, Long householdId) {
+
+        HouseholdUserLookup householdUserLookup = new HouseholdUserLookup(userId, householdId);
+        HouseholdUserLookup savedHouseholdUserLookup = this.householdUserLookupRepository.save(householdUserLookup);
+
+        return savedHouseholdUserLookup;
+
+    }
+
+    /**
+     * Gets all of the user ids in a household
+     * @param id
+     * @return
+     */
+    public List<UserPOJO> getUsersInHousehold(Long id) {
+        List<HouseholdUserLookup> householdUserLookups =
+                this.householdUserLookupRepository.findHouseholdUserLookupByHouseholdId(id);
+
+
+        List<UserPOJO> users = new ArrayList<>();
+        for(HouseholdUserLookup householdUserLookup : householdUserLookups) {
+            UserServiceCommunication userServiceCommunication = new UserServiceCommunication();
+            users.add(userServiceCommunication.getUser(householdUserLookup.getUserId()));
+        }
+
+        return users;
     }
 }
