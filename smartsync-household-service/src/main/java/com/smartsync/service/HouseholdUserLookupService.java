@@ -25,6 +25,12 @@ public class HouseholdUserLookupService {
 
     }
 
+    /**
+     * Adds a user to the household
+     * @param userId the user id to add
+     * @param householdId the household to add the user to
+     * @return the household user look up
+     */
     public HouseholdUserLookup addUserToHouseHold(Long userId, Long householdId) {
 
         HouseholdUserLookup householdUserLookup = new HouseholdUserLookup(userId, householdId);
@@ -51,5 +57,16 @@ public class HouseholdUserLookupService {
         }
 
         return users;
+    }
+
+    /**
+     * Returns the household user look up for the user id
+     * @param id the user id to find
+     * @return the household user look up object
+     */
+    public HouseholdUserLookup getHouseholdForUser(Long id) {
+
+        HouseholdUserLookup householdUserLookup = this.householdUserLookupRepository.findHouseholdUserLookupByUserId(id);
+        return householdUserLookup;
     }
 }

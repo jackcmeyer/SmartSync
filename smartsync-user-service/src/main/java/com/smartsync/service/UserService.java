@@ -2,6 +2,8 @@ package com.smartsync.service;
 
 import com.smartsync.model.User;
 import com.smartsync.model.UserRepository;
+import communication.HouseholdServiceCommunication;
+import model.HouseholdPOJO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -80,9 +82,6 @@ public class UserService {
 
         User savedUser = this.userRepository.findByUserId(user.getUserId());
 
-
-
-
         savedUser.setEmail(user.getEmail());
         savedUser.setFamilyName(user.getFamilyName());
         savedUser.setFullName(user.getFullName());
@@ -116,8 +115,15 @@ public class UserService {
 
             return deletedUser;
         }
-
-
     }
 
+    /**
+     * Gets the household which the user belongs to
+     * @param id the id of the user
+     * @return the household which the user belongs to
+     */
+    public HouseholdPOJO getHouseholdForUserId(Long id) {
+        HouseholdServiceCommunication householdServiceCommunication = new HouseholdServiceCommunication();
+        return householdServiceCommunication.getHouseholdForUserId(id);
+    }
 }

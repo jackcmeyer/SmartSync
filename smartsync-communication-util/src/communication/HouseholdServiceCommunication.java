@@ -51,6 +51,17 @@ public class HouseholdServiceCommunication {
         }
     }
 
+    public HouseholdPOJO getHouseholdForUserId(Long userId) {
+        try {
+            String json = HttpUtil.executeGetRequest(HOUSEHOLD_BASE_URL + "users/" + userId);
+            return jsonToHousehold(json);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
     /**
      * Creates a new household
      *

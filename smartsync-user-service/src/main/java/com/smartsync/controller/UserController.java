@@ -7,6 +7,7 @@ import com.smartsync.service.UserService;
 import com.smartsync.validator.UserValidator;
 import com.smartsync.validator.ValidationError;
 import com.smartsync.validator.ValidationErrorBuilder;
+import model.HouseholdPOJO;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -131,7 +132,7 @@ public class UserController {
         ValidationError validationError = ValidationErrorBuilder.fromBindErrors(errors);
 
         if(errors.hasErrors()) {
-            throw new IllegalRequestFormatException("Could not update user.", "/users/", validationError);
+            throw new IllegalRequestFormatException("Could not update user.", "/users", validationError);
         }
 
         User updatedUser = this.userService.updateUser(new User(userDTO));
@@ -160,6 +161,13 @@ public class UserController {
 
         logger.info("Successfully deleted user: " + user);
         return ResponseEntity.ok(user);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/{id}/households", produces = "application/json")
+    public ResponseEntity getHouseholdForUser(@PathVariable("id") Long id) {
+        HouseholdPOJO household = this.userService.getHouseholdForUserId(id);
+
+        return ResponseEntity.ok(household);
     }
 
 

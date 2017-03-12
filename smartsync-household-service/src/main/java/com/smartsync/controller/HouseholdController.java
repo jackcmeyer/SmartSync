@@ -167,6 +167,17 @@ public class HouseholdController {
 
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/users/{userId}", produces = "application/json")
+    public ResponseEntity getHouseholdForUser(@PathVariable("userId") Long userId) {
+
+        HouseholdUserLookup householdUserLookup = this.householdUserLookupService.getHouseholdForUser(userId);
+
+        Household household = this.householdService.getHouseHoldById(householdUserLookup.getHouseholdId());
+
+        return ResponseEntity.ok(household);
+
+    }
+
     /**
      * Handles the household not found exception
      *

@@ -22,14 +22,14 @@ public interface HouseholdUserLookupRepository extends JpaRepository<HouseholdUs
     List<HouseholdUserLookup> findHouseholdUserLookupByHouseholdId(Long householdId);
 
     /**
-     * Finds a HouseHOld obejct by user id. This will inherently give us all of the households that a given user is a
+     * Finds a HouseHold object by user id. This will inherently give us all of the households that a given user is a
      * part of.
      *
      * @param userId the user id to to find by
      *
      * @return the list of household user objects
      */
-    List<HouseholdUserLookup> findHouseholdUserLookupByUserId(Long userId);
+    HouseholdUserLookup findHouseholdUserLookupByUserId(Long userId);
 }
 
 

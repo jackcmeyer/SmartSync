@@ -1,7 +1,5 @@
 package model;
 
-import java.util.Date;
-
 /**
  * @author Jack Meyer
  *
@@ -59,15 +57,16 @@ public class HouseholdPOJO {
     /**
      * The last updated date
      */
-    private Date lastUpdated;
+    private String lastUpdated;
 
     /**
      * The created date
      */
-    private Date created;
+    private String created;
 
     public HouseholdPOJO(Long householdId, String householdName, String ownerId, String firstAddressLine,
-                         String secondAddressLine, String city, String state, int zipCode, Date lastUpdated, Date created) {
+                         String secondAddressLine, String city, String state, int zipCode, String lastUpdated,
+                         String created) {
         this.householdId = householdId;
         this.householdName = householdName;
         this.ownerId = ownerId;
@@ -144,19 +143,19 @@ public class HouseholdPOJO {
         this.zipCode = zipCode;
     }
 
-    public Date getLastUpdated() {
+    public String getLastUpdated() {
         return lastUpdated;
     }
 
-    public void setLastUpdated(Date lastUpdated) {
+    public void setLastUpdated(String lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
 
-    public Date getCreated() {
+    public String getCreated() {
         return created;
     }
 
-    public void setCreated(Date created) {
+    public void setCreated(String created) {
         this.created = created;
     }
 
