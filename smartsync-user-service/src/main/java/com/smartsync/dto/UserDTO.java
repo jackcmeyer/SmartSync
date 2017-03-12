@@ -10,7 +10,7 @@ public class UserDTO {
     /**
      * The user id for the user. This is also the id for the user's google account
      */
-    private String userId;
+    private String googleId;
 
     /**
      * The user's full name
@@ -42,9 +42,9 @@ public class UserDTO {
      */
     private String role;
 
-    public UserDTO(String userId, String fullName, String givenName, String familyName, String imageURL, String email,
+    public UserDTO(String googleId, String fullName, String givenName, String familyName, String imageURL, String email,
                    String role) {
-        this.userId = userId;
+        this.googleId = googleId;
         this.fullName = fullName;
         this.givenName = givenName;
         this.familyName = familyName;
@@ -57,12 +57,12 @@ public class UserDTO {
         // default constructor
     }
 
-    public String getUserId() {
-        return userId;
+    public String getGoogleId() {
+        return googleId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setGoogleId(String googleId) {
+        this.googleId = googleId;
     }
 
     public String getFullName() {
@@ -116,7 +116,7 @@ public class UserDTO {
     @Override
     public String toString() {
         return "UserDTO {" +
-                "\n\tuserId='" + userId + '\'' +
+                "\n\tgoogleId='" + googleId + '\'' +
                 ", \n\tfullName='" + fullName + '\'' +
                 ", \n\tgivenName='" + givenName + '\'' +
                 ", \n\tfamilyName='" + familyName + '\'' +

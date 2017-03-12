@@ -29,7 +29,7 @@ public class UserService {
      * @param userId the user Id
      * @return
      */
-    public User getUserById(String userId) {
+    public User getUserById(Long userId) {
         return userRepository.findByUserId(userId);
     }
 
@@ -41,6 +41,16 @@ public class UserService {
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
+
+    /**
+     * Gets a user by their google id
+     * @param googleId the google id
+     * @return the user
+     */
+    public User getUserByGoogleId(String googleId) {
+        return userRepository.findByGoogleId(googleId);
+    }
+
 
     /**
      * Gets all of the user's in the database
@@ -94,7 +104,7 @@ public class UserService {
      *
      * @return the deleted user
      */
-    public User deleteUser(String id) {
+    public User deleteUser(Long id) {
         User deletedUser = this.userRepository.findByUserId(id);
 
         if(deletedUser == null) {
@@ -102,7 +112,7 @@ public class UserService {
         }
 
         else {
-            this.userRepository.delete(id);
+            this.userRepository.delete(deletedUser);
 
             return deletedUser;
         }

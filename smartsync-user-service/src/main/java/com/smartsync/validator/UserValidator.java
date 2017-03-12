@@ -2,12 +2,10 @@ package com.smartsync.validator;
 
 import com.smartsync.dto.UserDTO;
 import org.apache.commons.validator.EmailValidator;
-import org.apache.commons.validator.routines.*;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
-import org.apache.commons.validator.*;
 
 /**
  * @author Jack Meyer
@@ -28,8 +26,6 @@ public class UserValidator implements Validator {
     public void validate(Object object, Errors errors) {
 
         UserDTO user = (UserDTO) object;
-
-        System.out.println(user);
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "userId", "field.required",
                 "User ID must not be empty.");
@@ -52,8 +48,6 @@ public class UserValidator implements Validator {
                 errors.rejectValue("role", "field.invalid", "User Role must be 0 or 1");
             }
 
-
-            System.out.println(user.getEmail());
             if(!EmailValidator.getInstance().isValid(user.getEmail())) {
                 errors.rejectValue("email", "field.invalid", "User Email must be a valid email address.");
             }
