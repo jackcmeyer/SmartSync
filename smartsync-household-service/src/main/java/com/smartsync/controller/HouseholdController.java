@@ -11,11 +11,15 @@ import com.smartsync.service.HouseholdUserLookupService;
 import com.smartsync.validator.HouseholdValidator;
 import com.smartsync.validator.ValidationError;
 import com.smartsync.validator.ValidationErrorBuilder;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Jack Meyer
@@ -24,6 +28,8 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 public class HouseholdController {
+
+    private final Logger logger = Logger.getLogger(this.getClass());
 
     @Autowired
     private HouseholdService householdService;
@@ -42,7 +48,11 @@ public class HouseholdController {
      */
     @RequestMapping(method = RequestMethod.GET, value = "/", produces = "application/json")
     public ResponseEntity getAllHouseholds() {
-        return ResponseEntity.ok(this.householdService.getAllHouseholds());
+
+        List<Household> householdList = new ArrayList<>();
+
+        logger.info("Successfully got all households: " + householdList);
+        return ResponseEntity.ok(householdList);
     }
 
     /**
@@ -55,15 +65,22 @@ public class HouseholdController {
     @RequestMapping(method = RequestMethod.GET, value = "/{id}", produces = "application/json")
     public ResponseEntity getHouseHoldById(@PathVariable("id") Long id) {
 
+        logger.info("Getting household information for id: " + id);
+
         Household h = this.householdService.getHouseHoldById(id);
 
         if(h == null) {
-            String message = "Could not find user with id " + id + ".";
+            String message = "Could not find household with id " + id + ".";
             String url = "households/{id}";
+
+
+            logger.error(message);
             throw new HouseholdNotFoundException(message, url);
         }
 
-       return ResponseEntity.ok(this.householdService.getHouseHoldById(id));
+
+        logger.info("Successfully got household information: " + h);
+        return ResponseEntity.ok(h);
     }
 
     /**
@@ -84,11 +101,14 @@ public class HouseholdController {
         if(errors.hasErrors()) {
             String message = "Could not create new household.";
             String url = "/households/";
+
+            logger.error("Could not create new household: " + errors);
             throw new IllegalRequestFormatException(message, url, validationError);
         }
 
         Household h = this.householdService.addHousehold(new Household(householdDTO));
 
+        logger.info("Successfully added new household: " + h);
         return ResponseEntity.ok(h);
     }
 
@@ -104,11 +124,14 @@ public class HouseholdController {
         Household h = this.householdService.deleteHousehold(id);
 
         if(h == null) {
-            String message = "Could not delete household with id " + id + ".";
+            String message = "Could not delete household because household with id " + id + " does not exist.";
             String url = "households/{id}";
+
+            logger.error(message);
             throw new HouseholdNotFoundException(message, url);
         }
 
+        logger.info("Successfully deleted household: " + h);
         return ResponseEntity.ok(h);
     }
 
