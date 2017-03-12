@@ -3,6 +3,7 @@ package com.smartsync.model;
 import com.smartsync.dto.UserDTO;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.Date;
 
@@ -15,10 +16,15 @@ import java.util.Date;
 public class User {
 
     /**
-     * The user id for the user. This is also the id for the user's google account
+     * The user id for the user.
      */
-    @Id
-    private String userId;
+    @Id @GeneratedValue
+    private Long userId;
+
+    /**
+     * The user's id for their google account
+     */
+    private String googleId;
 
     /**
      * The user's full name
@@ -63,7 +69,7 @@ public class User {
 
     /**
      * Constructor which uses parameters to create the new user
-     * @param userId
+     * @param googleId
      * @param fullName
      * @param givenName
      * @param familyName
@@ -71,9 +77,9 @@ public class User {
      * @param email
      * @param role
      */
-    public User(String userId, String fullName, String givenName, String familyName, String imageURL, String email,
+    public User(String googleId, String fullName, String givenName, String familyName, String imageURL, String email,
                 int role) {
-        this.userId = userId;
+        this.googleId = googleId;
         this.fullName = fullName;
         this.givenName = givenName;
         this.familyName = familyName;
@@ -89,7 +95,6 @@ public class User {
      * @param userDTO
      */
     public User(UserDTO userDTO) {
-        this.userId = userDTO.getUserId();
         this.fullName = userDTO.getFullName();
         this.givenName = userDTO.getGivenName();
         this.familyName = userDTO.getFamilyName();
@@ -104,12 +109,20 @@ public class User {
         // empty constructor
     }
 
-    public String getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public String getGoogleId() {
+        return googleId;
+    }
+
+    public void setGoogleId(String googleId) {
+        this.googleId = googleId;
     }
 
     public String getFullName() {
