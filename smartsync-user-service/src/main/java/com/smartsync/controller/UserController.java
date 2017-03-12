@@ -7,6 +7,7 @@ import com.smartsync.service.UserService;
 import com.smartsync.validator.UserValidator;
 import com.smartsync.validator.ValidationError;
 import com.smartsync.validator.ValidationErrorBuilder;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,8 @@ import java.util.List;
  */
 @RestController
 public class UserController {
+
+    private final Logger logger = Logger.getLogger(this.getClass());
 
     @Autowired
     private UserService userService;
@@ -49,6 +52,8 @@ public class UserController {
     @RequestMapping(method = RequestMethod.GET, value = "/{id}", produces = "application/json")
     public ResponseEntity getUserById(@PathVariable("id") String id) {
 
+        logger.info("Getting user information for id: " + id);
+
         User user = this.userService.getUserById(id);
 
         if(user == null) {
@@ -56,9 +61,11 @@ public class UserController {
             String message = "Could not find user with id " + id + ".";
             String url = "/users/" + id;
 
+            logger.error(message);
             throw new UserNotFoundException(message, url);
         }
 
+        logger.info("Successfully got user information: " + user);
         return ResponseEntity.ok(user);
     }
 
@@ -74,6 +81,8 @@ public class UserController {
     @RequestMapping(method = RequestMethod.POST, value = "/", produces = "application/json")
     public ResponseEntity addUser(@RequestBody UserDTO userDTO, Errors errors) {
 
+        logger.info("Adding new user: " + userDTO);
+
         UserValidator userValidator = new UserValidator();
         userValidator.validate(userDTO, errors);
 
@@ -81,23 +90,35 @@ public class UserController {
 
 
         if(errors.hasErrors()) {
+
+            logger.error("User could not be created: " + validationError.getErrors());
             throw new IllegalRequestFormatException("Could not add user.", "/users/", validationError);
         }
 
-        if(this.userService.getUserById(userDTO.getUserId()) != null) {
 
-            throw new DuplicateUserException("Could not add new user with id " + userDTO.getUserId() +
+
+
+        if(this.userService.getUserByGoogleId(userDTO.getGoogleId()) != null) {
+
+            logger.error("Could not create new user with google id : " + userDTO.getGoogleId() +
+                    " because user already exists");
+            throw new DuplicateUserException("Could not add new user with google id " + userDTO.getGoogleId() +
                     " because a user with this id already exists.", "/users/");
         }
 
         if(this.userService.getUserByEmail(userDTO.getEmail()) != null) {
+
+            logger.error("Could not create new use with email: " + userDTO.getEmail() + " because user already exists");
             throw new DuplicateUserException("Could not add new user with email " + userDTO.getEmail() +
                     " because a user with this id already exists.", "/users/");
         }
 
 
+
         User user = new User(userDTO);
         User savedUser = this.userService.addUser(user);
+        logger.info("Successfully created new user: " + savedUser);
+
         return ResponseEntity.ok(savedUser);
     }
 
@@ -131,9 +152,13 @@ public class UserController {
         if(user == null) {
             String message = "Could not delete user with id: " + id;
             String url = "/users/" + id;
+
+            logger.error("Could not find user with id: " + id + " to delete");
             throw new UserNotFoundException(message, url);
         }
 
+
+        logger.info("Successfully deleted user: " + user);
         return ResponseEntity.ok(user);
     }
 
