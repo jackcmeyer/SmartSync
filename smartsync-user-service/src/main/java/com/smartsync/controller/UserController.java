@@ -50,7 +50,7 @@ public class UserController {
      * @return the user
      */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}", produces = "application/json")
-    public ResponseEntity getUserById(@PathVariable("id") String id) {
+    public ResponseEntity getUserById(@PathVariable("id") Long id) {
 
         logger.info("Getting user information for id: " + id);
 
@@ -145,7 +145,7 @@ public class UserController {
      * @return the user that was deleted
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}", produces = "application/json")
-    public ResponseEntity deleteUser(@PathVariable("id") String id) {
+    public ResponseEntity deleteUser(@PathVariable("id") Long id) {
 
         User user = this.userService.deleteUser(id);
 
