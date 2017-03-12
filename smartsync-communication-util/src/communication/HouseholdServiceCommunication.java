@@ -41,7 +41,7 @@ public class HouseholdServiceCommunication {
      * Gets household by id
      * @param id the id to find by
      */
-    public HouseholdPOJO getHouseholdByHouseholdId(String id) {
+    public HouseholdPOJO getHouseholdByHouseholdId(Long id) {
         try {
             String json = HttpUtil.executeGetRequest(HOUSEHOLD_BASE_URL + id);
             return jsonToHousehold(json);
@@ -83,7 +83,7 @@ public class HouseholdServiceCommunication {
      *
      * @param id the id to delete
      */
-    public HouseholdPOJO deleteHousehold(String id) {
+    public HouseholdPOJO deleteHousehold(Long id) {
         try {
             String json = HttpUtil.executeDeleteRequest(HOUSEHOLD_BASE_URL + id);
             return jsonToHousehold(json);
@@ -104,6 +104,4 @@ public class HouseholdServiceCommunication {
 
         return household;
     }
-
-
 }

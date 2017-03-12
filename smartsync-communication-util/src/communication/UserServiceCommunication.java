@@ -40,7 +40,7 @@ public class UserServiceCommunication {
      *
      * @param id the id to find by
      */
-    public UserPOJO getUser(String id) {
+    public UserPOJO getUser(Long id) {
 
         try {
             String json = HttpUtil.executeGetRequest(USER_BASE_URL + id);
@@ -85,7 +85,7 @@ public class UserServiceCommunication {
      *
      * @param id the id to delete by
      */
-    public UserPOJO deleteUser(String id) {
+    public UserPOJO deleteUser(Long id) {
 
         try {
             String json = HttpUtil.executeDeleteRequest(USER_BASE_URL + id);

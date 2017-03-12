@@ -19,7 +19,6 @@ public class HouseholdPOJO {
      */
     private String householdName;
 
-
     /**
      * The userId of the owner of the household
      */
