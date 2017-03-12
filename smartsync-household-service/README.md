@@ -62,10 +62,10 @@ Adds a new household to the application
 | zipCode           | Number | The zip code where the household is located. |
 
 #### Example Request
-### URL 
+##### URL 
 `localhost:8000/households/`
 
-#### Request Body
+##### Request Body
 ```json
 {
 	"householdName": "Nathan's House",
@@ -108,15 +108,15 @@ Gets information about the household with the specific id.
 
 ### DELETE `/households/{id}
 #### Description
-Delets the household with the specific id. Will return the deleted household. 
+Deletes the household with the specific id. Will return the deleted household. 
 
 #### Request Parameters
 | Name              | Type   | Description                                  |
 |-------------------|--------|----------------------------------------------|
-| id                | Number | The id of the househod                       |
+| id                | Number | The id of the household                       |
 
 #### Example Request
-`loaclhost:8000/households/1`
+`localhost:8000/households/1`
 
 #### Example Response Body
 ```json
@@ -132,4 +132,78 @@ Delets the household with the specific id. Will return the deleted household.
   "lastUpdated": 1489096349000,
   "created": 1489096349000
 }
+```
+
+### GET '/households/users/{userId}'
+
+#### Description
+Gets the hold which the user is a part of.
+
+#### Request Parameters
+| Name              | Type   | Description                                  |
+|-------------------|--------|----------------------------------------------|
+| userId                | Number | The user id to find the household for.                       |
+
+#### Example Request
+`localhost:8000/households/users/1`
+
+#### Example Response Body
+```json
+{
+  "householdId": 1,
+  "householdName": "Jack's House",
+  "ownerId": "jack111",
+  "firstAddressLine": "111 Lynn Ave",
+  "secondAddressLine": null,
+  "city": "Ames",
+  "state": "IA",
+  "zipCode": 50014,
+  "lastUpdated": 1489096349000,
+  "created": 1489096349000
+}
+```
+
+### POST /households/{id}/users/{userId}
+
+#### Description
+Adds a user to a household.
+
+#### Request Parameters
+| Name              | Type   | Description                                  |
+|-------------------|--------|----------------------------------------------|
+| id                | Number | The household id to add the user to.         |
+| userId            | Number | The user id to add to the household          |
+
+#### Example Request 
+`localhost:8000/households/1/users/1`
+
+### GET /households/{id}/users
+
+#### Description
+Gets the users apart of the household
+
+#### Request Parameters
+| Name              | Type   | Description                                  |
+|-------------------|--------|----------------------------------------------|
+| id                | Number | The household id to get the users for.         |
+
+#### Example Request
+`localhost:8000/households/{id}/users`
+
+#### Example Response Body
+```json
+[
+  {
+    "userId": 3,
+    "googleId": null,
+    "fullName": "Jack Meyer",
+    "givenName": "Jack",
+    "familyName": "Meyer",
+    "imageURL": "http://www.fakeurl.com",
+    "email": "jackcmeyer@gmail.com",
+    "role": 1,
+    "created": "1489290709000",
+    "lastUpdated": "1489290709000"
+  }
+]
 ```

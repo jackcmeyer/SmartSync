@@ -129,4 +129,31 @@ Deletes the user with the specific id. Will return the deleted user.
     "lastUpdated": 1488752840000
   }
   ```
+  
+### GET `users/{id}/households`
+### Description
+Gets the household the user is a part of
 
+#### Request Parameters
+| Name       | Type    | Description                                                                                             |
+|------------|---------|---------------------------------------------------------------------------------------------------------| 
+| id     | String  | The user's google account id, also used for a unique identifier for internal use.     
+
+#### Example Request
+`localhost:8000/users/1/household`
+
+### Example Resopnse
+```json
+{
+  "householdId": 1,
+  "householdName": "Jack's House",
+  "ownerId": "jack111",
+  "firstAddressLine": "111 Lynn Ave",
+  "secondAddressLine": null,
+  "city": "Ames",
+  "state": "IA",
+  "zipCode": 50014,
+  "lastUpdated": 1489096349000,
+  "created": 1489096349000
+}
+```

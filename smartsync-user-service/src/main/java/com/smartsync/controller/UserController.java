@@ -123,6 +123,12 @@ public class UserController {
         return ResponseEntity.ok(savedUser);
     }
 
+    /**
+     * Updates the user information
+     * @param userDTO the user information to update
+     * @param errors an error container
+     * @return the udpated user
+     */
     @RequestMapping(method = RequestMethod.PUT, value = "/", produces = "application/json")
     public ResponseEntity updateUser(@RequestBody UserDTO userDTO, Errors errors) {
 
@@ -163,7 +169,12 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/{id}/households", produces = "application/json")
+    /**
+     * Gets the household which the user is a part of
+     * @param id the user id
+     * @return the household which the uesr is a part of
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/{id}/household", produces = "application/json")
     public ResponseEntity getHouseholdForUser(@PathVariable("id") Long id) {
         HouseholdPOJO household = this.userService.getHouseholdForUserId(id);
 

@@ -42,8 +42,8 @@ public class HouseholdUserLookupService {
 
     /**
      * Gets all of the user ids in a household
-     * @param id
-     * @return
+     * @param id the household id
+     * @return a list of users a part of the household
      */
     public List<UserPOJO> getUsersInHousehold(Long id) {
         List<HouseholdUserLookup> householdUserLookups =

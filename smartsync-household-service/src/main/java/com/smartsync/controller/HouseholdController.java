@@ -149,6 +149,11 @@ public class HouseholdController {
         return ResponseEntity.ok(h);
     }
 
+    /**
+     * Gets the users that are a part of the household
+     * @param id the household id
+     * @return list of users in the household
+     */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}/users", produces = "application/json")
     public ResponseEntity getUsersInHousehold(@PathVariable("id") Long id) {
 
@@ -158,6 +163,12 @@ public class HouseholdController {
 
     }
 
+    /**
+     * Adds a user to a household
+     * @param id the household id
+     * @param userId the user id
+     * @return success
+     */
     @RequestMapping(method = RequestMethod.POST, value = "/{id}/users/{userId}", produces = "application/json")
     public ResponseEntity addUserToHousehold(@PathVariable("id") Long id,
                                              @PathVariable("userId") Long userId) {
@@ -167,6 +178,11 @@ public class HouseholdController {
 
     }
 
+    /**
+     * Gets the household which the user is a part of
+     * @param userId the user to find the household
+     * @return the household the user is a part of
+     */
     @RequestMapping(method = RequestMethod.GET, value = "/users/{userId}", produces = "application/json")
     public ResponseEntity getHouseholdForUser(@PathVariable("userId") Long userId) {
 
