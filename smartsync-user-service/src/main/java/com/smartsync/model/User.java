@@ -95,6 +95,7 @@ public class User {
      * @param userDTO
      */
     public User(UserDTO userDTO) {
+        this.googleId = userDTO.getGoogleId();
         this.fullName = userDTO.getFullName();
         this.givenName = userDTO.getGivenName();
         this.familyName = userDTO.getFamilyName();

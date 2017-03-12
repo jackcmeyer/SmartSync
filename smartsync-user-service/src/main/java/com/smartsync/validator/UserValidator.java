@@ -27,8 +27,8 @@ public class UserValidator implements Validator {
 
         UserDTO user = (UserDTO) object;
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "userId", "field.required",
-                "User ID must not be empty.");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "googleId", "field.required",
+                "googleId must not be empty.");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "fullName", "field.required",
                 "User Full Name must not be empty.");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "givenName", "field.required",
