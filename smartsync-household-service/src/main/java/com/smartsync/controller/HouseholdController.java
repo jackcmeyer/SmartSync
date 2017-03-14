@@ -34,6 +34,9 @@ public class HouseholdController {
     @Autowired
     private HouseholdService householdService;
 
+    private UserServiceCommunication userServiceCommunication = new UserServiceCommunication();
+
+
     @Autowired
     private HouseholdUserLookupService householdUserLookupService;
 
@@ -157,8 +160,19 @@ public class HouseholdController {
     @RequestMapping(method = RequestMethod.GET, value = "/{id}/users", produces = "application/json")
     public ResponseEntity getUsersInHousehold(@PathVariable("id") Long id) {
 
+        Household household = this.householdService.getHouseHoldById(id);
+        if(household == null) {
+            String message = "Could not find household with id " + id + ".";
+            String url = "households/" + id + "/users";
+
+            logger.error(message);
+            throw new HouseholdNotFoundException(message, url);
+        }
+
+
         List<UserPOJO> users = this.householdUserLookupService.getUsersInHousehold(id);
 
+        logger.info("Successfully found users in household with id " + id + "\n" + users);
         return ResponseEntity.ok(users);
 
     }
@@ -172,8 +186,31 @@ public class HouseholdController {
     @RequestMapping(method = RequestMethod.POST, value = "/{id}/users/{userId}", produces = "application/json")
     public ResponseEntity addUserToHousehold(@PathVariable("id") Long id,
                                              @PathVariable("userId") Long userId) {
+        
+        UserPOJO user = userServiceCommunication.getUser(userId);
 
+        if(user == null) {
+            String message = "Could not find user with id " + userId + ".";
+            String url = "/households/{householdId}/users/{userId}";
+
+            logger.error(message);
+
+            throw new UserNotFoundException(message, url);
+        }
+
+        Household household = this.householdService.getHouseHoldById(id);
         HouseholdUserLookup householdUserLookup = this.householdUserLookupService.addUserToHouseHold(userId, id);
+
+
+        if(household == null || householdUserLookup == null) {
+            String message = "Could nto find household with id " + id + ".";
+            String url = "/households/{householdId}/users/{userId}";
+
+            logger.error(message);
+            throw new HouseholdNotFoundException(message, url);
+        }
+
+        logger.info("Successfully added user  with id " + userId + " to the household with id " + id);
         return ResponseEntity.ok().body("success");
 
     }
@@ -186,10 +223,29 @@ public class HouseholdController {
     @RequestMapping(method = RequestMethod.GET, value = "/users/{userId}", produces = "application/json")
     public ResponseEntity getHouseholdForUser(@PathVariable("userId") Long userId) {
 
-        HouseholdUserLookup householdUserLookup = this.householdUserLookupService.getHouseholdForUser(userId);
+        UserPOJO user = userServiceCommunication.getUser(userId);
+        if(user == null) {
+            String message = "Could not find user with id " + userId + ".";
+            String url = "/households/users/{userId}";
 
+            logger.error(message);
+            throw new UserNotFoundException(message, url);
+        }
+
+
+        HouseholdUserLookup householdUserLookup = this.householdUserLookupService.getHouseholdForUser(userId);
         Household household = this.householdService.getHouseHoldById(householdUserLookup.getHouseholdId());
 
+        if(household == null || householdUserLookup == null) {
+            String message = "Could not find household for user with id " + userId +  ".";
+            String url = "/households/users/{userId}";
+
+            logger.error(message);
+            throw new HouseholdNotFoundException(message, url);
+        }
+
+
+        logger.info("Successfully found household for user with id " + userId + ": " + household);
         return ResponseEntity.ok(household);
 
     }

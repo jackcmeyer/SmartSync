@@ -176,7 +176,29 @@ public class UserController {
      */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}/household", produces = "application/json")
     public ResponseEntity getHouseholdForUser(@PathVariable("id") Long id) {
+
+        User user = this.userService.getUserById(id);
+
+
+        if(user == null) {
+            String message = "Could not find user with id " + id + ".";
+            String url = "/users/" + id + "/households";
+
+            logger.error(message);
+            throw new UserNotFoundException(message, url);
+        }
+
         HouseholdPOJO household = this.userService.getHouseholdForUserId(id);
+
+        if(household == null) {
+            String message = "Could not find household for user with id " + id + ".";
+            String url = "/users/" + id + "household";
+
+            logger.error(message);
+            throw new HouseholdNotFoundException(message, url);
+        }
+
+        logger.info("Successfully found household " + household);
 
         return ResponseEntity.ok(household);
     }
@@ -189,7 +211,7 @@ public class UserController {
      */
     @ExceptionHandler(value = UserNotFoundException.class)
     public ResponseEntity handleUserNotFoundException(UserNotFoundException e) {
-        ErrorInfo error = new ErrorInfo("User Not Found Exception", e.getMessage(), e.getUrl());
+        ErrorInfo error = new ErrorInfo("User Not Found", e.getMessage(), e.getUrl());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
@@ -204,7 +226,18 @@ public class UserController {
         ErrorInfo error = new ErrorInfo("Duplicate User", e.getMessage(), e.getUrl());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
 
+    /**
+     * Handles the household not found exception
+     * @param e the household not found exception
+     * @return the response entity with the error
+     */
+    @ExceptionHandler(value = HouseholdNotFoundException.class)
+    public ResponseEntity handleHouseholdNotFoundException(HouseholdNotFoundException e) {
+        ErrorInfo error = new ErrorInfo("Household Not Found", e.getMessage(), e.getUrl());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
     /**
@@ -220,4 +253,5 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
+
 }
