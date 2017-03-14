@@ -163,7 +163,7 @@ Gets the hold which the user is a part of.
 }
 ```
 
-### POST /households/{id}/users/{userId}
+### POST /households/users/
 
 #### Description
 Adds a user to a household.
@@ -171,12 +171,29 @@ Adds a user to a household.
 #### Request Parameters
 | Name              | Type   | Description                                  |
 |-------------------|--------|----------------------------------------------|
-| id                | Number | The household id to add the user to.         |
+| householdId                | Number | The household id to add the user to.         |
 | userId            | Number | The user id to add to the household          |
 
 #### Example Request 
-`localhost:8000/households/1/users/1`
+##### Request URL
+`localhost:8000/households/users/`
 
+##### Request Body
+```json
+{
+  "userId": 3,
+  "householdId": 3
+}
+```
+
+#### Example Response Body
+```json
+{
+  "id": 6,
+  "userId": 3,
+  "householdId": 3
+}
+```
 ### GET /households/{id}/users
 
 #### Description
