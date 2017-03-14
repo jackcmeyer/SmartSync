@@ -1,11 +1,13 @@
 package com.smartsync.controller;
 
+import com.smartsync.dto.AddUserToHouseholdDTO;
 import com.smartsync.dto.HouseholdDTO;
 import com.smartsync.error.*;
 import com.smartsync.model.Household;
 import com.smartsync.model.HouseholdUserLookup;
 import com.smartsync.service.HouseholdService;
 import com.smartsync.service.HouseholdUserLookupService;
+import com.smartsync.validator.AddUserValidator;
 import com.smartsync.validator.HouseholdValidator;
 import com.smartsync.validator.ValidationError;
 import com.smartsync.validator.ValidationErrorBuilder;
@@ -99,9 +101,8 @@ public class HouseholdController {
         HouseholdValidator validator = new HouseholdValidator();
         validator.validate(householdDTO, errors);
 
-        ValidationError validationError = ValidationErrorBuilder.fromBindErrors(errors);
-
         if(errors.hasErrors()) {
+            ValidationError validationError = ValidationErrorBuilder.fromBindErrors(errors);
             String message = "Could not create new household.";
             String url = "/households/";
 
@@ -179,39 +180,74 @@ public class HouseholdController {
 
     /**
      * Adds a user to a household
-     * @param id the household id
-     * @param userId the user id
+     *
+     * @param addUserToHouseholdDTO the add user to household dto
+     *
      * @return success
      */
-    @RequestMapping(method = RequestMethod.POST, value = "/{id}/users/{userId}", produces = "application/json")
-    public ResponseEntity addUserToHousehold(@PathVariable("id") Long id,
-                                             @PathVariable("userId") Long userId) {
-        
-        UserPOJO user = userServiceCommunication.getUser(userId);
+    @RequestMapping(method = RequestMethod.POST, value = "/users", produces = "application/json")
+    public ResponseEntity addUserToHousehold(@RequestBody AddUserToHouseholdDTO addUserToHouseholdDTO, Errors errors) {
 
+        AddUserValidator addUserValidator = new AddUserValidator();
+        addUserValidator.validate(addUserToHouseholdDTO, errors);
+
+        // check if there was any errors with the request body
+        if(errors.hasErrors()) {
+            ValidationError validationError = ValidationErrorBuilder.fromBindErrors(errors);
+            String message = "Could not create new household.";
+            String url = "/households/users";
+
+            logger.error("Could not create new household: " + errors);
+            throw new IllegalRequestFormatException(message, url, validationError);
+        }
+
+        Long userId = addUserToHouseholdDTO.getUserId();
+        Long id = addUserToHouseholdDTO.getHouseholdId();
+
+        // check if the user exists
+        UserPOJO user = userServiceCommunication.getUser(userId);
         if(user == null) {
             String message = "Could not find user with id " + userId + ".";
-            String url = "/households/{householdId}/users/{userId}";
+            String url = "/households/users/";
 
             logger.error(message);
 
             throw new UserNotFoundException(message, url);
         }
 
+        // check if the household exists
         Household household = this.householdService.getHouseHoldById(id);
-        HouseholdUserLookup householdUserLookup = this.householdUserLookupService.addUserToHouseHold(userId, id);
-
-
-        if(household == null || householdUserLookup == null) {
-            String message = "Could nto find household with id " + id + ".";
-            String url = "/households/{householdId}/users/{userId}";
+        if(household == null) {
+            String message = "Could not find household with id " + id + ".";
+            String url = "/households/users";
 
             logger.error(message);
             throw new HouseholdNotFoundException(message, url);
         }
 
+        // check if the user is already in a household
+        HouseholdUserLookup householdUserLookup = this.householdUserLookupService.getHouseholdForUser(userId);
+        if(householdUserLookup != null) {
+            String message = "User with id " + userId + " is already in a household with id " + id;
+            String url = "households/users";
+
+            logger.error(message);
+            throw new UserAlreadyInHouseholdException(message, url);
+        }
+
+        // error adding the user to the household
+        HouseholdUserLookup savedHouseholdUserLookUp = this.householdUserLookupService.addUserToHouseHold(userId, id);
+        if(savedHouseholdUserLookUp == null) {
+            String message = "Could not add user with id " + userId + " to household with id " + id;
+            String url = "/households/users";
+
+            logger.error(message);
+            throw new HouseholdNotFoundException(message, url);
+        }
+
+
         logger.info("Successfully added user  with id " + userId + " to the household with id " + id);
-        return ResponseEntity.ok().body("success");
+        return ResponseEntity.ok().body(savedHouseholdUserLookUp);
 
     }
 
@@ -235,7 +271,6 @@ public class HouseholdController {
 
         HouseholdUserLookup householdUserLookup = this.householdUserLookupService.getHouseholdForUser(userId);
         Household household = this.householdService.getHouseHoldById(householdUserLookup.getHouseholdId());
-
         if(household == null || householdUserLookup == null) {
             String message = "Could not find household for user with id " + userId +  ".";
             String url = "/households/users/{userId}";
@@ -243,6 +278,7 @@ public class HouseholdController {
             logger.error(message);
             throw new HouseholdNotFoundException(message, url);
         }
+
 
 
         logger.info("Successfully found household for user with id " + userId + ": " + household);
@@ -278,6 +314,12 @@ public class HouseholdController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
+    @ExceptionHandler(value = UserAlreadyInHouseholdException.class)
+    public ResponseEntity handleUserAlreadyInHouseholdException(UserAlreadyInHouseholdException e) {
+        ErrorInfo error = new ErrorInfo("User Already In Household", e.getMessage(), e.getUrl());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
     /**
      * Handles the illegal request format exception
      *

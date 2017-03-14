@@ -5,7 +5,7 @@ package com.smartsync.dto;
  *
  * The add user dto, contains a user id and household id
  */
-public class AddUserDTO {
+public class AddUserToHouseholdDTO {
 
     /**
      * The household id that we are adding a user to
@@ -17,12 +17,12 @@ public class AddUserDTO {
      */
     private Long userId;
 
-    public AddUserDTO(Long householdId, Long userId) {
+    public AddUserToHouseholdDTO(Long householdId, Long userId) {
         this.householdId = householdId;
         this.userId = userId;
     }
 
-    public AddUserDTO() {
+    public AddUserToHouseholdDTO() {
     }
 
     public Long getHouseholdId() {

@@ -1,6 +1,6 @@
 package com.smartsync.validator;
 
-import com.smartsync.dto.AddUserDTO;
+import com.smartsync.dto.AddUserToHouseholdDTO;
 import com.smartsync.dto.HouseholdDTO;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -24,7 +24,7 @@ public class AddUserValidator implements Validator {
      * @param errors the errors
      */
     public void validate(Object object, Errors errors) {
-        AddUserDTO addUserDTO = (AddUserDTO) object;
+        AddUserToHouseholdDTO addUserToHouseholdDTO = (AddUserToHouseholdDTO) object;
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "userId", "field.required",
                 "User ID must not be empty.");

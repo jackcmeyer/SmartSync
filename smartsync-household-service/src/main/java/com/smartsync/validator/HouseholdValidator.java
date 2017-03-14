@@ -40,14 +40,18 @@ public class HouseholdValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "state", "field.required",
                 "State must not be empty.");
 
+        /**
+         * Doing specific validation, must not have any errors from above
+         */
+        if(!errors.hasErrors()) {
+            if(Integer.toString(household.getZipCode()).length() != 5) {
+                errors.rejectValue("zipCode", "field.length", "Zip Code must be 5 digits");
+            }
 
-        if(Integer.toString(household.getZipCode()).length() != 5) {
-            errors.rejectValue("zipCode", "field.length", "Zip Code must be 5 digits");
-        }
-
-        if(household.getState().length() != 2) {
-            errors.rejectValue("state", "field.length",
-                    "State Code must be 2 characters long. Did you send the full length name instead?");
+            if(household.getState().length() != 2) {
+                errors.rejectValue("state", "field.length",
+                        "State Code must be 2 characters long. Did you send the full length name instead?");
+            }
         }
     }
 }

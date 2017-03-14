@@ -1,11 +1,11 @@
 package com.smartsync.error;
 
 /**
- * @author Jack Meyer
+ * @author Jack Meyer (jackcmeyer@gmail.com)
  *
- * The Household Not Found Exception. Thrown when there was not a household found.
+ * The user already in household exception
  */
-public class HouseholdNotFoundException extends RuntimeException {
+public class UserAlreadyInHouseholdException extends RuntimeException {
 
     /**
      * The url at which the error occurred
@@ -17,7 +17,7 @@ public class HouseholdNotFoundException extends RuntimeException {
      */
     private String message;
 
-    public HouseholdNotFoundException(String message, String url) {
+    public UserAlreadyInHouseholdException(String message, String url) {
         this.url = url;
         this.message = message;
     }
@@ -38,3 +38,4 @@ public class HouseholdNotFoundException extends RuntimeException {
         this.message = message;
     }
 }
+
