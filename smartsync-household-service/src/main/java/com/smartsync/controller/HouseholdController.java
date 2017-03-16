@@ -1,13 +1,13 @@
 package com.smartsync.controller;
 
-import com.smartsync.dto.AddUserToHouseholdDTO;
+import com.smartsync.dto.UserAndHouseholdDTO;
 import com.smartsync.dto.HouseholdDTO;
 import com.smartsync.error.*;
 import com.smartsync.model.Household;
 import com.smartsync.model.HouseholdUserLookup;
 import com.smartsync.service.HouseholdService;
 import com.smartsync.service.HouseholdUserLookupService;
-import com.smartsync.validator.AddUserValidator;
+import com.smartsync.validator.UserAndHouseholdValidator;
 import com.smartsync.validator.HouseholdValidator;
 import com.smartsync.validator.ValidationError;
 import com.smartsync.validator.ValidationErrorBuilder;
@@ -181,15 +181,15 @@ public class HouseholdController {
     /**
      * Adds a user to a household
      *
-     * @param addUserToHouseholdDTO the add user to household dto
+     * @param userAndHouseholdDTO the add user to household dto
      *
      * @return success
      */
     @RequestMapping(method = RequestMethod.POST, value = "/users", produces = "application/json")
-    public ResponseEntity addUserToHousehold(@RequestBody AddUserToHouseholdDTO addUserToHouseholdDTO, Errors errors) {
+    public ResponseEntity addUserToHousehold(@RequestBody UserAndHouseholdDTO userAndHouseholdDTO, Errors errors) {
 
-        AddUserValidator addUserValidator = new AddUserValidator();
-        addUserValidator.validate(addUserToHouseholdDTO, errors);
+        UserAndHouseholdValidator userAndHouseholdValidator = new UserAndHouseholdValidator();
+        userAndHouseholdValidator.validate(userAndHouseholdDTO, errors);
 
         // check if there was any errors with the request body
         if(errors.hasErrors()) {
@@ -201,8 +201,8 @@ public class HouseholdController {
             throw new IllegalRequestFormatException(message, url, validationError);
         }
 
-        Long userId = addUserToHouseholdDTO.getUserId();
-        Long id = addUserToHouseholdDTO.getHouseholdId();
+        Long userId = userAndHouseholdDTO.getUserId();
+        Long id = userAndHouseholdDTO.getHouseholdId();
 
         // check if the user exists
         UserPOJO user = userServiceCommunication.getUser(userId);
@@ -252,6 +252,67 @@ public class HouseholdController {
     }
 
     /**
+     * Removes a user from a household
+     * @param userAndHouseholdDTO the user and household to remove
+     * @param errors the errors
+     * @return the response entity with the UserHouseHoldLookUp that was removed
+     */
+    @RequestMapping(method = RequestMethod.DELETE, value = "/users", produces = "application/json")
+    public ResponseEntity removeUserFromHousehold(@RequestBody UserAndHouseholdDTO userAndHouseholdDTO, Errors errors) {
+
+        UserAndHouseholdValidator userAndHouseholdValidator = new UserAndHouseholdValidator();
+        userAndHouseholdValidator.validate(userAndHouseholdDTO, errors);
+        ValidationError validationError = ValidationErrorBuilder.fromBindErrors(errors);
+
+
+        // if there were missing information from the request
+        if(errors.hasErrors()) {
+            String message = "Could not remove user from household";
+            String url = "/households/users";
+
+            logger.error(message + " " + validationError);
+            throw new IllegalRequestFormatException(message, url, validationError);
+        }
+        UserPOJO userPOJO = this.userServiceCommunication.getUser(userAndHouseholdDTO.getUserId());
+        // if the user does not exist
+        if(userPOJO == null) {
+            String message = "Could not remove user with id: " + userAndHouseholdDTO.getUserId() + " because the user" +
+                    "does not exist";
+            String url = "/households/users";
+
+            logger.error(message);
+            throw new UserNotFoundException(message, url);
+        }
+
+        // check if the household exists
+        Household household = this.householdService.getHouseHoldById(userAndHouseholdDTO.getHouseholdId());
+        if(household == null) {
+            String message = "Could not remove user with id: " + userAndHouseholdDTO.getUserId() + " because the " +
+                    "household with id: " + userAndHouseholdDTO.getHouseholdId() + " does not exist";
+            String url = "/households/users";
+
+            logger.error(message);
+            throw new HouseholdNotFoundException(message, url);
+        }
+
+        HouseholdUserLookup householdUserLookup =
+                this.householdUserLookupService.removeUserFromHousehold(userAndHouseholdDTO.getUserId(),
+                        userAndHouseholdDTO.getHouseholdId());
+
+        // check if the user was actually in the household
+        if(householdUserLookup == null) {
+            String message = "Error removing user with id: " + userAndHouseholdDTO.getUserId() + " from household with" +
+                    "id "  + userAndHouseholdDTO.getHouseholdId();
+            String url = "/households/users";
+
+            logger.error(message);
+            throw new HouseholdNotFoundException(message, url);
+        }
+
+        return ResponseEntity.ok(householdUserLookup);
+    }
+
+    /**
      * Gets the household which the user is a part of
      * @param userId the user to find the household
      * @return the household the user is a part of
@@ -262,7 +323,7 @@ public class HouseholdController {
         UserPOJO user = userServiceCommunication.getUser(userId);
         if(user == null) {
             String message = "Could not find user with id " + userId + ".";
-            String url = "/households/users/{userId}";
+            String url = "/households/users/" + userId;
 
             logger.error(message);
             throw new UserNotFoundException(message, url);
@@ -273,7 +334,7 @@ public class HouseholdController {
         Household household = this.householdService.getHouseHoldById(householdUserLookup.getHouseholdId());
         if(household == null || householdUserLookup == null) {
             String message = "Could not find household for user with id " + userId +  ".";
-            String url = "/households/users/{userId}";
+            String url = "/households/users/" + userId;
 
             logger.error(message);
             throw new HouseholdNotFoundException(message, url);

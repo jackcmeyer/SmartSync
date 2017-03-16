@@ -47,7 +47,7 @@ public class HouseholdUserLookupService {
      */
     public List<UserPOJO> getUsersInHousehold(Long id) {
         List<HouseholdUserLookup> householdUserLookups =
-                this.householdUserLookupRepository.findHouseholdUserLookupByHouseholdId(id);
+                this.householdUserLookupRepository.findByHouseholdId(id);
 
 
         List<UserPOJO> users = new ArrayList<>();
@@ -66,7 +66,44 @@ public class HouseholdUserLookupService {
      */
     public HouseholdUserLookup getHouseholdForUser(Long id) {
 
-        HouseholdUserLookup householdUserLookup = this.householdUserLookupRepository.findHouseholdUserLookupByUserId(id);
+        HouseholdUserLookup householdUserLookup = this.householdUserLookupRepository.findByUserId(id);
         return householdUserLookup;
+    }
+
+    /**
+     * Removes a user from a household
+     * @param userId the user to remove
+     * @param householdId the household to remove from
+     * @return the household user look up object that was removed
+     */
+    public HouseholdUserLookup removeUserFromHousehold(Long userId, Long householdId) {
+
+        HouseholdUserLookup householdUserLookup =
+                this.householdUserLookupRepository.findByUserIdAndHouseholdId(userId, householdId);
+
+        this.householdUserLookupRepository.delete(householdUserLookup);
+
+        return householdUserLookup;
+    }
+
+    /**
+     * Removes all of the household user lookups with the household id. This will be useful when a household is deleted
+     * @param householdId the household id to remove
+     * @return the list of the household user lookups that were removed.
+     */
+    public List<HouseholdUserLookup> removeAllHouseholds(Long householdId) {
+        System.out.println("DO WE GET HERE: " + householdId);
+
+        List<HouseholdUserLookup> households =
+                this.householdUserLookupRepository.findByHouseholdId(householdId);
+
+        System.out.println(households);
+
+        for(HouseholdUserLookup householdUserLookup : households) {
+            this.householdUserLookupRepository.delete(householdUserLookup);
+        }
+
+        return households;
+
     }
 }

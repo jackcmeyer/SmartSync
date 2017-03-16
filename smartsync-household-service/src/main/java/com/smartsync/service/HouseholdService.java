@@ -18,6 +18,9 @@ public class HouseholdService {
     @Autowired
     private HouseholdRepository householdRepository;
 
+    @Autowired
+    private HouseholdUserLookupService householdUserLookupService;
+
     public HouseholdService() {
 
     }
@@ -63,10 +66,18 @@ public class HouseholdService {
     public Household deleteHousehold(Long id) {
         Household household = this.householdRepository.findByHouseholdId(id);
 
-        this.householdRepository.delete(household);
+        if(household == null) {
+            return null;
+        }
 
-        // TODO delete look up too
+        else {
+            this.householdRepository.delete(household);
 
-        return household;
+            this.householdUserLookupService.removeAllHouseholds(id);
+
+            return household;
+        }
+
+
     }
 }
