@@ -3,8 +3,10 @@ package communication;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import model.HouseholdPOJO;
+import model.HouseholdUserLookUpPOJO;
 import util.HttpUtil;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.*;
 
@@ -51,6 +53,11 @@ public class HouseholdServiceCommunication {
         }
     }
 
+    /**
+     * Gets the household for the user id
+     * @param userId
+     * @return
+     */
     public HouseholdPOJO getHouseholdForUserId(Long userId) {
         try {
             String json = HttpUtil.executeGetRequest(HOUSEHOLD_BASE_URL + "users/" + userId);
@@ -105,6 +112,36 @@ public class HouseholdServiceCommunication {
     }
 
     /**
+     * Removes a user from the household
+     * @param parameters the parameter hashmap
+     * @return the household user lookup pojo
+     */
+    public HouseholdUserLookUpPOJO removeUserFromHousehold(HashMap<String, String> parameters) {
+
+        // create request parameter string
+        Iterator iterator = parameters.entrySet().iterator();
+        StringBuilder builder = new StringBuilder();
+        builder.append("{");
+        while(iterator.hasNext()) {
+            Map.Entry pair = (Map.Entry) iterator.next();
+            builder.append("\"" + pair.getKey() + "\" : " + "\"" +pair.getValue() + "\", ");
+        }    String requestBody = builder.toString();
+
+        requestBody = requestBody.substring(0, requestBody.length()-2);
+        requestBody = requestBody + "}";
+
+        try {
+            String json = HttpUtil.executeDeleteRequestWithBody(HOUSEHOLD_BASE_URL + "users", requestBody);
+            return jsonToHouseholdUserLookup(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+
+    }
+
+    /**
      * Converts a json string into a HouseholdPOJO object
      * @param json the json string
      * @return the household pojo object
@@ -114,5 +151,16 @@ public class HouseholdServiceCommunication {
         HouseholdPOJO household = gson.fromJson(json, HouseholdPOJO.class);
 
         return household;
+    }
+
+    /**
+     * Converts a json string into a HouseholdUserLookupPOJO object
+     * @param json the json string
+     * @return the HouseholdUserLOokupPojo
+     */
+    private HouseholdUserLookUpPOJO jsonToHouseholdUserLookup(String json) {
+        Gson gson = new Gson();
+        HouseholdUserLookUpPOJO householdUserLookUpPOJO = gson.fromJson(json, HouseholdUserLookUpPOJO.class);
+        return householdUserLookUpPOJO;
     }
 }
