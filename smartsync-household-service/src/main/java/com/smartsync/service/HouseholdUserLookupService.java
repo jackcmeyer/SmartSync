@@ -92,8 +92,6 @@ public class HouseholdUserLookupService {
      * @return the list of the household user lookups that were removed.
      */
     public List<HouseholdUserLookup> removeAllHouseholds(Long householdId) {
-        System.out.println("DO WE GET HERE: " + householdId);
-
         List<HouseholdUserLookup> households =
                 this.householdUserLookupRepository.findByHouseholdId(householdId);
 

@@ -273,6 +273,7 @@ public class HouseholdController {
             logger.error(message + " " + validationError);
             throw new IllegalRequestFormatException(message, url, validationError);
         }
+
         UserPOJO userPOJO = this.userServiceCommunication.getUser(userAndHouseholdDTO.getUserId());
         // if the user does not exist
         if(userPOJO == null) {

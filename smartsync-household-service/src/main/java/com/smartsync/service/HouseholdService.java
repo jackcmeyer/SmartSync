@@ -59,7 +59,7 @@ public class HouseholdService {
     }
 
     /**
-     * Delets the household with the current id.
+     * Deletes the household with the current id.
      * @param id
      * @return
      */
@@ -71,13 +71,10 @@ public class HouseholdService {
         }
 
         else {
-            this.householdRepository.delete(household);
-
             this.householdUserLookupService.removeAllHouseholds(id);
+            this.householdRepository.delete(household);
 
             return household;
         }
-
-
     }
 }

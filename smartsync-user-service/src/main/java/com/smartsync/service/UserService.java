@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -111,7 +112,19 @@ public class UserService {
         }
 
         else {
+
+            HouseholdServiceCommunication householdServiceCommunication = new HouseholdServiceCommunication();
+            HouseholdPOJO householdPOJO = householdServiceCommunication.getHouseholdForUserId(id);
+
+            HashMap<String, String> parameters = new HashMap<>();
+            parameters.put("userId", Long.toString(id));
+            parameters.put("householdId", Long.toString(householdPOJO.getHouseholdId()));
+
+            householdServiceCommunication.removeUserFromHousehold(parameters);
+
+
             this.userRepository.delete(deletedUser);
+
 
             return deletedUser;
         }
