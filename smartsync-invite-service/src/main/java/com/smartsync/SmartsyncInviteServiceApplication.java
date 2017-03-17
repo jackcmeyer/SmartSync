@@ -1,0 +1,14 @@
+package com.smartsync;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+
+@SpringBootApplication
+@EnableDiscoveryClient
+public class SmartsyncInviteServiceApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(SmartsyncInviteServiceApplication.class, args);
+	}
+}
