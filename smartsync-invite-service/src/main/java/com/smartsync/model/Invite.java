@@ -113,4 +113,16 @@ public class Invite {
     public void setLastUpdated(Date lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
+
+    @Override
+    public String toString() {
+        return "Invite{" +
+                "\n\tid=" + id +
+                ", \n\tuserId=" + userId +
+                ", \n\thouseholdId=" + householdId +
+                ", \n\taccepted=" + accepted +
+                ", \n\tcreated=" + created +
+                ", \n\tlastUpdated=" + lastUpdated +
+                "\n}";
+    }
 }
