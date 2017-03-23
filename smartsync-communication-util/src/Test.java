@@ -9,11 +9,11 @@ public class Test {
 
     public static void main(String[] args) {
         HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("userId", "3");
-        hashMap.put("householdId", "15");
+        hashMap.put("userId", "1");
+        hashMap.put("householdId", "17");
 
         HouseholdServiceCommunication householdServiceCommunication = new HouseholdServiceCommunication();
-        System.out.println(householdServiceCommunication.removeUserFromHousehold(hashMap));
+        System.out.println(householdServiceCommunication.addUserToHousehold(hashMap));
 
     }
 }

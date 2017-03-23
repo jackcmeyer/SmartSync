@@ -82,7 +82,9 @@ public class HouseholdServiceCommunication {
         while(iterator.hasNext()) {
             Map.Entry pair = (Map.Entry) iterator.next();
             builder.append("\"" + pair.getKey() + "\" : " + "\"" +pair.getValue() + "\", ");
-        }    String requestBody = builder.toString();
+        }
+
+        String requestBody = builder.toString();
 
         requestBody = requestBody.substring(0, requestBody.length()-2);
         requestBody = requestBody + "}";
@@ -105,6 +107,33 @@ public class HouseholdServiceCommunication {
         try {
             String json = HttpUtil.executeDeleteRequest(HOUSEHOLD_BASE_URL + id);
             return jsonToHousehold(json);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Adds a user to household
+     * @param parameters
+     * @return
+     */
+    public HouseholdUserLookUpPOJO addUserToHousehold(HashMap<String, String> parameters) {
+        // create request parameter string
+        Iterator iterator = parameters.entrySet().iterator();
+        StringBuilder builder = new StringBuilder();
+        builder.append("{");
+        while(iterator.hasNext()) {
+            Map.Entry pair = (Map.Entry) iterator.next();
+            builder.append("\"" + pair.getKey() + "\" : " + "\"" +pair.getValue() + "\", ");
+        }    String requestBody = builder.toString();
+
+        requestBody = requestBody.substring(0, requestBody.length()-2);
+        requestBody = requestBody + "}";
+
+        try {
+            String json = HttpUtil.executePostRequest(HOUSEHOLD_BASE_URL + "users", requestBody);
+            return jsonToHouseholdUserLookup(json);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
