@@ -55,6 +55,7 @@ public class HouseholdController {
     public ResponseEntity getAllHouseholds() {
 
         List<Household> householdList = new ArrayList<>();
+        householdList = this.householdService.getAllHouseholds();
 
         logger.info("Successfully got all households: " + householdList);
         return ResponseEntity.ok(householdList);
