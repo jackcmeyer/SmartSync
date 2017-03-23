@@ -3,9 +3,11 @@ package com.smartsync.service;
 import com.smartsync.dto.InviteDTO;
 import com.smartsync.model.Invite;
 import com.smartsync.model.InviteRepository;
+import communication.HouseholdServiceCommunication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -38,6 +40,33 @@ public class InviteService {
      */
     public Invite getInvite(Long id) {
         return inviteRepository.findById(id);
+    }
+
+
+    /**
+     * Accepts an invite. It should delete other invites for a user and add them to a household.
+     * @param id the invite id
+     * @return the invite that was accepted
+     */
+    public Invite acceptInvite(Long id) {
+
+        // get invite and and delete, don't need it anymore
+        Invite invite = this.inviteRepository.findById(id);
+        invite.setAccepted(true);
+        this.inviteRepository.delete(invite);
+
+        // get other invites for users, and delete
+        List<Invite> userInvites = this.inviteRepository.findByUserId(invite.getUserId());
+        this.inviteRepository.delete(userInvites);
+
+        // add user to household
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("userId", Long.toString(invite.getUserId()));
+        parameters.put("householdId", Long.toString(invite.getHouseholdId()));
+        HouseholdServiceCommunication householdServiceCommunication = new HouseholdServiceCommunication();
+        householdServiceCommunication.addUserToHousehold(parameters);
+
+        return invite;
     }
 
     /**

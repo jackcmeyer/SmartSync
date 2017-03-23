@@ -70,9 +70,31 @@ public class InviteController {
         return ResponseEntity.ok(invite);
     }
 
+    /**
+     * Aceepts an invite
+     * @param id the id of the invite to accept
+     * @return the invite that was accepted
+     */
+    @RequestMapping(method = RequestMethod.POST, value = "/{id}/accept", produces = "application/json")
+    public ResponseEntity acceptInvite(@PathVariable(value = "id") Long id) {
+        Invite invite = this.inviteService.getInvite(id);
+
+        if(invite == null) {
+            String message = "Could not find invite with id: " + id;
+            String url = "/invites/" + id;
+
+            logger.error(message);
+            throw new InviteNotFoundException(message, url);
+        }
+
+        invite = this.inviteService.acceptInvite(id);
+
+        return ResponseEntity.ok(invite);
+    }
+
 
     /**
-     * Adds a new household
+     * Adds a new invite
      * @param inviteDTO the invite data transfer object
      * @return the invite that was created
      */
@@ -85,12 +107,14 @@ public class InviteController {
         ValidationError validationError = ValidationErrorBuilder.fromBindErrors(errors);
 
 
+        // check for error in the request
         if(errors.hasErrors()) {
 
             logger.error("Invite could not be created: " + validationError.getErrors());
             throw new IllegalRequestFormatException("Could not add invite.", "/invites/", validationError);
         }
 
+        // check if the uesr exists
         UserServiceCommunication userServiceCommunication = new UserServiceCommunication();
         UserPOJO userPOJO = userServiceCommunication.getUser(inviteDTO.getUserId());
         if(userPOJO == null) {
@@ -101,6 +125,7 @@ public class InviteController {
             throw new UserNotFoundException(message, url);
         }
 
+        // check if the household exists
         HouseholdServiceCommunication householdServiceCommunication = new HouseholdServiceCommunication();
         HouseholdPOJO householdPOJO = householdServiceCommunication.getHouseholdByHouseholdId(inviteDTO.getHouseholdId());
         if(householdPOJO == null) {
