@@ -129,4 +129,18 @@ public class WeatherInformation {
     public void setLastUpdated(Date lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
+
+    @Override
+    public String toString() {
+        return "WeatherInformation{" +
+                "id=" + id +
+                ", weatherLocation=" + weatherLocation +
+                ", weather='" + weather + '\'' +
+                ", temperature=" + temperature +
+                ", feelsLikeTemperature=" + feelsLikeTemperature +
+                ", windSpeed=" + windSpeed +
+                ", windDirection='" + windDirection + '\'' +
+                ", lastUpdated=" + lastUpdated +
+                '}';
+    }
 }

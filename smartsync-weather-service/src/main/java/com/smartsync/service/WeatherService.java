@@ -47,7 +47,11 @@ public class WeatherService {
         WeatherLocation weatherLocation = new WeatherLocation(weatherLocationDTO);
         this.weatherLocationRepository.save(weatherLocation);
 
-        // TODO WeatherUnderground Service call
+
+        WeatherUndergroundService weatherUndergroundService = new WeatherUndergroundService();
+        weatherUndergroundService.getWeatherForLocation("Ames", "IA");
+
+
         WeatherInformation weatherInformation =
                 new WeatherInformation("cloudy", 88.0, 89.0, 10.0, "NNW");
         weatherInformation.setWeatherLocation(weatherLocation);

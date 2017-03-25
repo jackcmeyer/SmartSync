@@ -80,4 +80,14 @@ public class WeatherLocation {
     public void setState(String state) {
         this.state = state;
     }
+
+    @Override
+    public String toString() {
+        return "WeatherLocation{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", city='" + city + '\'' +
+                ", state='" + state + '\'' +
+                '}';
+    }
 }

@@ -1,5 +1,6 @@
 package com.smartsync.service;
 
+import com.smartsync.dto.WeatherUndergroundDTO;
 import com.smartsync.model.WeatherInformation;
 import com.smartsync.model.WeatherInformationRepository;
 import com.smartsync.model.WeatherLocation;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,7 +40,12 @@ public class WeatherInformationService {
      * @return the weather information
      */
     public WeatherInformation getWeatherInformationById(Long weatherLocationId) {
-        return this.weatherInformationRepository.findByWeatherLocationId(weatherLocationId);
+        System.out.println("GET WEAtHER FOR USER");
+
+        WeatherInformation weatherInformation = this.weatherInformationRepository.findByWeatherLocationId(weatherLocationId);
+        updateWeatherInformation(weatherInformation);
+
+        return weatherInformation;
     }
 
     /**
@@ -51,8 +58,10 @@ public class WeatherInformationService {
 
         List<WeatherInformation> weatherInformationList = new ArrayList<>();
         for(WeatherLocation weatherLocation : weatherLocationList) {
+
             WeatherInformation weatherInformation =
                     this.weatherInformationRepository.findByWeatherLocationId(weatherLocation.getId());
+            updateWeatherInformation(weatherInformation);
 
             weatherInformationList.add(weatherInformation);
         }
@@ -72,5 +81,36 @@ public class WeatherInformationService {
         this.weatherInformationRepository.delete(weatherInformation);
 
         return weatherInformation;
+    }
+
+    /**
+     * Updates the weather information
+     * @param weatherInformation the weather information to update
+     */
+    private void updateWeatherInformation(WeatherInformation weatherInformation) {
+
+        System.out.println("UPDATE WEATHER");
+
+        String city = weatherInformation.getWeatherLocation().getCity();
+        String state = weatherInformation.getWeatherLocation().getState();
+        Date now = new Date();
+
+        // condition to only update weather information every fifteen minutes
+        if((now.getTime() - weatherInformation.getLastUpdated().getTime()) >= 15*60*1000) {
+
+            WeatherUndergroundService weatherUndergroundService = new WeatherUndergroundService();
+            WeatherUndergroundDTO weatherUndergroundDTO = weatherUndergroundService.getWeatherForLocation(city, state);
+
+            weatherInformation.setWeather(weatherUndergroundDTO.getWeather());
+            weatherInformation.setTemperature(weatherUndergroundDTO.getTemperature());
+            weatherInformation.setFeelsLikeTemperature(weatherUndergroundDTO.getFeelsLikeTemperature());
+            weatherInformation.setWindSpeed(weatherUndergroundDTO.getWindSpeed());
+            weatherInformation.setWindDirection(weatherUndergroundDTO.getWindDirection());
+            weatherInformation.setLastUpdated(now);
+
+            this.weatherInformationRepository.save(weatherInformation);
+            System.out.println(weatherInformation);
+
+        }
     }
 }
