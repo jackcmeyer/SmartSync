@@ -1,21 +1,34 @@
 package com.smartsync.controller;
 
 import com.smartsync.dto.WeatherLocationDTO;
+import com.smartsync.error.*;
 import com.smartsync.model.WeatherInformation;
 import com.smartsync.model.WeatherLocation;
 import com.smartsync.service.WeatherInformationService;
 import com.smartsync.service.WeatherService;
+import com.smartsync.validator.ValidationError;
+import com.smartsync.validator.ValidationErrorBuilder;
+import com.smartsync.validator.WeatherValidator;
+import communication.UserServiceCommunication;
+import model.UserPOJO;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 /**
- * Created by jack on 3/23/17.
+ * @author Jack Meyer (jackcmeyer@gmail.com)
+ *
+ * The weather controller
  */
 @RestController
 public class WeatherController {
+
+    private final Logger logger = Logger.getLogger(this.getClass());
 
     @Autowired
     private WeatherService weatherService;
@@ -51,9 +64,37 @@ public class WeatherController {
      * @returnt the saved weather information
      */
     @RequestMapping(method = RequestMethod.POST, value = "/", produces = "application/json")
-    public ResponseEntity addWeather(@RequestBody WeatherLocationDTO weatherLocationDTO) {
-        WeatherLocation weatherLocation = this.weatherService.addWeather(weatherLocationDTO);
+    public ResponseEntity addWeather(@RequestBody WeatherLocationDTO weatherLocationDTO, Errors errors) {
 
+
+        WeatherValidator validator = new WeatherValidator();
+        validator.validate(weatherLocationDTO, errors);
+
+        // validate the weather location dto
+        if(errors.hasErrors()) {
+            String message = "Could not add new weather location " + weatherLocationDTO;
+            String url = "/weather/";
+
+            ValidationError validationError = ValidationErrorBuilder.fromBindErrors(errors);
+
+            logger.error(message + "\n" + "Errors: " + validationError);
+            throw new IllegalRequestFormatException(message, url, validationError);
+        }
+
+        // make sure the use exists
+        UserServiceCommunication userServiceCommunication = new UserServiceCommunication();
+        UserPOJO user = userServiceCommunication.getUser(weatherLocationDTO.getUserId());
+        if(user == null) {
+            String message = "Could not find user with id " + weatherLocationDTO.getUserId();
+            String url = "weather/";
+
+            logger.error(message);
+            throw new UserNotFoundException(message, url);
+        }
+
+
+        WeatherLocation weatherLocation = this.weatherService.addWeather(weatherLocationDTO);
+        logger.info("Successfully added new weather location " + weatherLocation);
         return ResponseEntity.ok(weatherLocation);
     }
 
@@ -66,6 +107,14 @@ public class WeatherController {
     public ResponseEntity getWeatherLocationById(@PathVariable("id") Long id) {
         WeatherLocation weatherLocation = this.weatherService.getWeatherLocationById(id);
 
+        if(weatherLocation == null) {
+            String message = "Could not find weather location with id " + id;
+            String url = "/" + id;
+
+            logger.error(message);
+            throw new WeatherNotFoundException(message, url);
+        }
+
         return ResponseEntity.ok(weatherLocation);
     }
 
@@ -77,6 +126,14 @@ public class WeatherController {
     @RequestMapping(method = RequestMethod.GET, value = "/{id}/information", produces = "application/json")
     public ResponseEntity getWeatherInformationByid(@PathVariable("id") Long id) {
         WeatherInformation weatherInformation = this.weatherInformationService.getWeatherInformationById(id);
+
+        if(weatherInformation == null) {
+            String message = "Could not find weather information with id " + id;
+            String url = "/" + id;
+
+            logger.error(message);
+            throw new WeatherNotFoundException(message, url);
+        }
 
         return ResponseEntity.ok(weatherInformation);
     }
@@ -91,6 +148,14 @@ public class WeatherController {
         WeatherLocation weatherLocation = this.weatherService.deleteWeatherLocationById(id);
         WeatherInformation weatherInformation = this.weatherInformationService.deleteWeatherInformationById(id);
 
+        if(weatherLocation == null || weatherInformation == null) {
+            String message = "Could not delete weather with id " + id + " because it could not be found";
+            String url = "/" + id;
+
+            logger.error(message);
+            throw new WeatherNotFoundException(message, url);
+        }
+
         return ResponseEntity.ok(weatherLocation);
     }
 
@@ -101,8 +166,22 @@ public class WeatherController {
      */
     @RequestMapping(method = RequestMethod.GET, value = "/users/{userId}/location", produces = "application/json")
     public ResponseEntity getWeatherLocationsForUser(@PathVariable("userId") Long userId) {
+
+        UserServiceCommunication userServiceCommunication = new UserServiceCommunication();
+        UserPOJO user = userServiceCommunication.getUser(userId);
+
+        if(user == null) {
+            String message = "Could not find user with id " + userId;
+            String url = "weather/";
+
+            logger.error(message);
+            throw new UserNotFoundException(message, url);
+        }
+
+
         List<WeatherLocation> weatherLocationList = this.weatherService.getWeatherLocationsForUser(userId);
 
+        logger.info("Successfully got weather locations for user: " + weatherLocationList);
         return ResponseEntity.ok(weatherLocationList);
     }
 
@@ -113,9 +192,22 @@ public class WeatherController {
      */
     @RequestMapping(method = RequestMethod.GET, value = "/users/{userId}/information", produces = "application/json")
     public ResponseEntity getWeatherInformationForUser(@PathVariable("userId") Long userId) {
+
+        UserServiceCommunication userServiceCommunication = new UserServiceCommunication();
+        UserPOJO user = userServiceCommunication.getUser(userId);
+
+        if(user == null) {
+            String message = "Could not find user with id " + userId;
+            String url = "weather/";
+
+            logger.error(message);
+            throw new UserNotFoundException(message, url);
+        }
+
         List<WeatherInformation> weatherInformationList =
                 this.weatherInformationService.getWeatherInformationForUser(userId);
 
+        logger.info("Successfully got weather information for user: " + weatherInformationList);
         return ResponseEntity.ok(weatherInformationList);
     }
 
@@ -126,8 +218,59 @@ public class WeatherController {
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "users/{userId}", produces = "application/json")
     public ResponseEntity deleteAllWeatherForUser(@PathVariable("userId") Long userId) {
+
+        UserServiceCommunication userServiceCommunication = new UserServiceCommunication();
+        UserPOJO user = userServiceCommunication.getUser(userId);
+
+        if(user == null) {
+            String message = "Could not find user with id " + userId;
+            String url = "weather/";
+
+            logger.error(message);
+            throw new UserNotFoundException(message, url);
+        }
+
         List<WeatherLocation> weatherLocationList = this.weatherService.deleteWeatherLocationsForUser(userId);
 
+        logger.info("Successfully deleted weather locations for user: " + weatherLocationList);
         return ResponseEntity.ok(weatherLocationList);
+    }
+
+    /**
+     * Handles the weather not found exception
+     * @param e the weather not found exceptino
+     * @return the response entity with the error
+     */
+    @ExceptionHandler(value = WeatherNotFoundException.class)
+    public ResponseEntity handleWeatherNotFoundException(WeatherNotFoundException e) {
+        ErrorInfo error = new ErrorInfo("Weather Not Found", e.getMessage(), e.getUrl());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    /**
+     * Handles the user not found exception
+     * @param e the user not found exception
+     * @return the response entity with the error
+     */
+    @ExceptionHandler(value = UserNotFoundException.class)
+    public ResponseEntity handleUserNotFoundException(UserNotFoundException e) {
+        ErrorInfo error = new ErrorInfo("User Not Found", e.getMessage(), e.getUrl());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    /**
+     * Handles when there is an illegal request format exception. This includes missing parameters, improper input,
+     * and other bad requests.
+     * @param e the illegal request format exception
+     * @return the response entity with the error
+     */
+    @ExceptionHandler(value = IllegalRequestFormatException.class)
+    public ResponseEntity handleIllegalRequestFormatException(IllegalRequestFormatException e) {
+        IllegalRequestFormatErrorInfo error = new IllegalRequestFormatErrorInfo("Illegal Request Format",
+                e.getMessage(), e.getUrl(), e.getErrors());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 }
