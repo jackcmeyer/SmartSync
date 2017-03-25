@@ -40,8 +40,6 @@ public class WeatherInformationService {
      * @return the weather information
      */
     public WeatherInformation getWeatherInformationById(Long weatherLocationId) {
-        System.out.println("GET WEAtHER FOR USER");
-
         WeatherInformation weatherInformation = this.weatherInformationRepository.findByWeatherLocationId(weatherLocationId);
         updateWeatherInformation(weatherInformation);
 
@@ -88,9 +86,6 @@ public class WeatherInformationService {
      * @param weatherInformation the weather information to update
      */
     private void updateWeatherInformation(WeatherInformation weatherInformation) {
-
-        System.out.println("UPDATE WEATHER");
-
         String city = weatherInformation.getWeatherLocation().getCity();
         String state = weatherInformation.getWeatherLocation().getState();
         Date now = new Date();
@@ -109,8 +104,6 @@ public class WeatherInformationService {
             weatherInformation.setLastUpdated(now);
 
             this.weatherInformationRepository.save(weatherInformation);
-            System.out.println(weatherInformation);
-
         }
     }
 }

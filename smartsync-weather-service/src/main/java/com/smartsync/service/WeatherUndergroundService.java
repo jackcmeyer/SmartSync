@@ -59,9 +59,7 @@ public class WeatherUndergroundService {
         Gson gson = new Gson();
 
         JsonObject mainJson = gson.fromJson(json, JsonObject.class);
-        System.out.println(mainJson);
         JsonObject currentObservationJson = mainJson.get("current_observation").getAsJsonObject();
-        System.out.println(currentObservationJson);
 
         String weather = currentObservationJson.get("weather").getAsString();
         double temperature = currentObservationJson.get("temp_f").getAsDouble();
