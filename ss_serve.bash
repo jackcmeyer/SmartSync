@@ -126,14 +126,14 @@ java -jar smartsync-api-gateway/target/smartsync-api-gateway-0.0.1-SNAPSHOT.jar 
 PID5=$!
 echo $PID5
 
-echo -e "${C_YEL}java -jar smartsync-user-serivce/target/smartsync-user-service-0.0.1-SNAPSHOT.jar${C_NRM}"
-java -jar smartsync-user-service/target/smartsync-user-service-0.0.1-SNAPSHOT.jar &
-PID6=$!
-echo $PID6
+#echo -e "${C_YEL}java -jar smartsync-user-serivce/target/smartsync-user-service-0.0.1-SNAPSHOT.jar${C_NRM}"
+#java -jar smartsync-user-service/target/smartsync-user-service-0.0.1-SNAPSHOT.jar &
+#PID6=$!
+#echo $PID6
 
-echo -e "${C_YEL}java -jar smartsync-household-service/target/smartsync-household-service-0.0.1-SNAPSHOT.jar${C_NRM}"
-java -jar smartsync-household-service/target/smartsync-household-service-0.0.1-SNAPSHOT.jar &
-PID7=$!
-echo $PID7
+#echo -e "${C_YEL}java -jar smartsync-household-service/target/smartsync-household-service-0.0.1-SNAPSHOT.jar${C_NRM}"
+#java -jar smartsync-household-service/target/smartsync-household-service-0.0.1-SNAPSHOT.jar &
+#PID7=$!
+#echo $PID7
 
 wait
