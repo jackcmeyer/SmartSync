@@ -9,11 +9,14 @@ Don't live harder, live smarter.
 
 2. Go to the project directory.
 
-3. In each subdirectory, run `mvn package`
+3. Go to the smartsync_communication_util directory and enter the following maven command:
+  mvn install:install-file -Dfile=smartsync-communication-util.jar -DgroupId=lib.communication -DartifactId=smartsync-communication-util -Dversion=2.0 -Dpackaging=jar
 
-4. In the main directory, run `./ss_serve.bash`. This will start each service. 
+4. In each subdirectory, run `mvn package`
 
-5. Make requests to `localhost:8000/*`
+5. In the main directory, run `./ss_serve.bash`. This will start each service. 
+
+6. Make requests to `localhost:8000/*`
 
 ### To Setup for Development: 
 
