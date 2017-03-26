@@ -10,7 +10,7 @@ Don't live harder, live smarter.
 2. Go to the project directory.
 
 3. Go to the smartsync_communication_util directory and enter the following maven command:
-  mvn install:install-file -Dfile=smartsync-communication-util.jar -DgroupId=lib.communication -DartifactId=smartsync-communication-util -Dversion=2.0 -Dpackaging=jar
+  `mvn install:install-file -Dfile=smartsync-communication-util.jar -DgroupId=lib.communication -DartifactId=smartsync-communication-util -Dversion=2.0 -Dpackaging=jar`
 
 4. In each subdirectory, run `mvn package`
 
