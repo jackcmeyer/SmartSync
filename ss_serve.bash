@@ -19,6 +19,10 @@ handler()
     kill -9 $PID6
     echo "kill -9 $PID7"
     kill -9 $PID7
+    echo "kill -9 $PID8"
+    kill -9 $PID8
+    echo "kill -9 $PID9"
+    kill -9 $PID9
 }
 
 # Colors
@@ -53,7 +57,9 @@ while [[ $# -gt 0 ]] ; do
 	    echo "    - smartsync-zipkin-service"
       echo "    - smartsync-api-gateway"
       echo "    - smartsync-user-service"
-      echo "    -smartsync-household-service"
+      echo "    - smartsync-household-service"
+      echo "    - smartsync-invite-service"
+      echo "    - smartsync-weather-service"
 	    exit
 	    ;;
     esac
@@ -67,7 +73,9 @@ echo -e "    smartsync-hystrix-dashboard:  8010"
 echo -e "    smartsync-zipkin-service:     9411"
 echo -e "    smartsync-api-gateway:        8000"
 echo -e "    smartsync-user-service:       8001"
-echo -e "    smartsync-household-service   8002${C_NRM}"
+echo -e "    smartsync-household-service   8002"
+echo -e "    smartsync-invite-service      8003"
+echo -e "    smartsync-weather-service     8004${C_NRM}"
 sleep 2
 
 # Run maven package on services
@@ -92,6 +100,12 @@ if [ "$SS_BUILD" = true ] ; then
     mvn package
     echo -e "${C_YEL}cd smartsync-household-service; mvn package${C_NRM}"
     cd ../smartsync-household-service
+    mvn package
+    echo -e "${C_YEL}cd smartsync-invite-service; mvn package${C_NRM}"
+    cd ../smartsync-invite-service
+    mvn package
+    echo -e "${C_YEL}cd smartsync-weather-service; mvn package${C_NRM}"
+    cd ../smartsync-weather-service
     mvn package
     cd ..
 fi
@@ -126,14 +140,24 @@ java -jar smartsync-api-gateway/target/smartsync-api-gateway-0.0.1-SNAPSHOT.jar 
 PID5=$!
 echo $PID5
 
-#echo -e "${C_YEL}java -jar smartsync-user-serivce/target/smartsync-user-service-0.0.1-SNAPSHOT.jar${C_NRM}"
-#java -jar smartsync-user-service/target/smartsync-user-service-0.0.1-SNAPSHOT.jar &
-#PID6=$!
-#echo $PID6
+echo -e "${C_YEL}java -jar smartsync-user-serivce/target/smartsync-user-service-0.0.1-SNAPSHOT.jar${C_NRM}"
+java -jar smartsync-user-service/target/smartsync-user-service-0.0.1-SNAPSHOT.jar &
+PID6=$!
+echo $PID6
 
-#echo -e "${C_YEL}java -jar smartsync-household-service/target/smartsync-household-service-0.0.1-SNAPSHOT.jar${C_NRM}"
-#java -jar smartsync-household-service/target/smartsync-household-service-0.0.1-SNAPSHOT.jar &
-#PID7=$!
-#echo $PID7
+echo -e "${C_YEL}java -jar smartsync-household-service/target/smartsync-household-service-0.0.1-SNAPSHOT.jar${C_NRM}"
+java -jar smartsync-household-service/target/smartsync-household-service-0.0.1-SNAPSHOT.jar &
+PID7=$!
+echo $PID7
+
+echo -e "${C_YEL}java -jar smartsync-invite-service/target/smartsync-invite-service-0.0.1-SNAPSHOT.jar${C_NRM}"
+java -jar smartsync-invite-service/target/smartsync-invite-service-0.0.1-SNAPSHOT.jar &
+PID8=$!
+echo $PID8
+
+echo -e "${C_YEL}java -jar smartsync-weather-service/target/smartsync-weather-service-0.0.1-SNAPSHOT.jar${C_NRM}"
+java -jar smartsync-weather-service/target/smartsync-weather-service-0.0.1-SNAPSHOT.jar &
+PID9=$!
+echo $PID9
 
 wait
