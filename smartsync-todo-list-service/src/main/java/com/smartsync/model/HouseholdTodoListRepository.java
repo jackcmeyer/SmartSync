@@ -23,6 +23,6 @@ public interface HouseholdTodoListRepository extends JpaRepository<HouseholdTodo
      * @param householdId the user to find by
      * @return the list of to do lists for a user
      */
-    List<TodoList> findByHouseholdId(Long householdId);
+    List<HouseholdTodoList> findByHouseholdId(Long householdId);
 
 }

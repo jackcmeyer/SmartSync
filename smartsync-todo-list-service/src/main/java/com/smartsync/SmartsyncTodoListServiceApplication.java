@@ -1,6 +1,9 @@
 package com.smartsync;
 
-import com.smartsync.model.*;
+import com.smartsync.model.HouseholdTodoList;
+import com.smartsync.model.HouseholdTodoListRepository;
+import com.smartsync.model.HouseholdTodoTask;
+import com.smartsync.model.HouseholdTodoTaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

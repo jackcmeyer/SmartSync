@@ -1,5 +1,7 @@
 package com.smartsync.model;
 
+import com.smartsync.dto.TodoListDTO;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -10,7 +12,7 @@ import java.util.Set;
  * The TODO list entity
  */
 @Entity
-public class TodoList {
+public class TodoList implements ITodoList {
 
     /**
      * The to do List todoListId
@@ -45,6 +47,12 @@ public class TodoList {
         this.userId = userId;
         this.name = name;
         this.tasks = tasks;
+    }
+
+    public TodoList(TodoListDTO todoListDTO) {
+        this.userId = todoListDTO.getUserId();
+        this.name = todoListDTO.getName();
+        this.tasks = new HashSet<>();
     }
 
     public TodoList() {

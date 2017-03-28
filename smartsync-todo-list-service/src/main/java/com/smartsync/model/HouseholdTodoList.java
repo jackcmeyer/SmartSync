@@ -1,5 +1,7 @@
 package com.smartsync.model;
 
+import com.smartsync.dto.HouseholdTodoListDTO;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -10,10 +12,10 @@ import java.util.Set;
  * The household to do list
  */
 @Entity
-public class HouseholdTodoList {
+public class HouseholdTodoList implements ITodoList {
 
     /**
-     * The to do List todoListId
+     * The to do List todoListIdf
      */
     @GeneratedValue
     @Id
@@ -46,6 +48,12 @@ public class HouseholdTodoList {
         this.householdId = userId;
         this.name = name;
         this.tasks = tasks;
+    }
+
+    public HouseholdTodoList(HouseholdTodoListDTO householdTodoListDTO) {
+        this.householdId = householdTodoListDTO.getHouseholdId();
+        this.name = householdTodoListDTO.getName();
+        this.tasks = new HashSet<>();
     }
 
     public HouseholdTodoList() {

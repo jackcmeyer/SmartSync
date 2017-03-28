@@ -1,5 +1,7 @@
 package com.smartsync.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -9,7 +11,7 @@ import java.util.Date;
  * The household to do list task
  */
 @Entity
-public class HouseholdTodoTask {
+public class HouseholdTodoTask implements ITodoTask{
 
     /**
      * The to do task todoTaskId
@@ -38,6 +40,7 @@ public class HouseholdTodoTask {
      * The to do list the task belongs to
      */
     @ManyToOne(targetEntity = HouseholdTodoList.class)
+    @JsonIgnore
     private HouseholdTodoList todoList;
 
     /**
