@@ -1,6 +1,7 @@
 package com.smartsync.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.smartsync.dto.TodoTaskDTO;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -53,13 +54,23 @@ public class HouseholdTodoTask implements ITodoTask{
      */
     private Date lastUpdated;
 
-    public HouseholdTodoTask(String description, boolean isCompleted, Date dueDate, HouseholdTodoList todoList) {
+    public HouseholdTodoTask(String description, Date dueDate, HouseholdTodoList todoList) {
         this.description = description;
-        this.isCompleted = isCompleted;
+        this.isCompleted = false;
         this.dueDate = dueDate;
         this.todoList = todoList;
         this.created =  new Date();
         this.lastUpdated = new Date();
+    }
+
+    public HouseholdTodoTask(TodoTaskDTO todoTaskDTO, HouseholdTodoList todoList) {
+        this.description = todoTaskDTO.getDescription();
+        this.isCompleted = false;
+        this.dueDate = todoTaskDTO.getDueDate();
+        this.todoList = todoList;
+        this.created = new Date();
+        this.lastUpdated = new Date();
+
     }
 
     public HouseholdTodoTask() {

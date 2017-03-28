@@ -14,6 +14,6 @@ public interface HouseholdTodoTaskRepository extends JpaRepository<HouseholdTodo
      * @param todoTaskId the to do task id to find by
      * @return the to do task
      */
-    TodoTask findByTodoTaskId(Long todoTaskId);
+    HouseholdTodoTask findByTodoTaskId(Long todoTaskId);
 
 }

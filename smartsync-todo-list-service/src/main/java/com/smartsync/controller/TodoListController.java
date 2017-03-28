@@ -8,10 +8,7 @@ import com.smartsync.model.TodoList;
 import com.smartsync.service.TodoListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -93,8 +90,9 @@ public class TodoListController {
      * @return the response entity with the new to do list
      */
     @RequestMapping(method = RequestMethod.POST, value = "/individual", produces = "application/json")
-    public ResponseEntity addIndividualTodoList(TodoListDTO todoListDTO) {
+    public ResponseEntity addIndividualTodoList(@RequestBody TodoListDTO todoListDTO) {
 
+        System.out.println(todoListDTO);
         TodoList todoList = this.todoListService.addIndividualTodoList(todoListDTO);
 
         return ResponseEntity.ok(todoList);
@@ -106,7 +104,7 @@ public class TodoListController {
      * @return response entity with the new household to do list
      */
     @RequestMapping(method = RequestMethod.POST, value = "/household", produces = "application/json")
-    public ResponseEntity addHouseholdTodoList(HouseholdTodoListDTO householdTodoListDTO) {
+    public ResponseEntity addHouseholdTodoList(@RequestBody HouseholdTodoListDTO householdTodoListDTO) {
         HouseholdTodoList householdTodoList = this.todoListService.addHouseholdTodoList(householdTodoListDTO);
 
         return ResponseEntity.ok(householdTodoList);
