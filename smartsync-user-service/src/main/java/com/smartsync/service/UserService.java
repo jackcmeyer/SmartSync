@@ -139,4 +139,15 @@ public class UserService {
         HouseholdServiceCommunication householdServiceCommunication = new HouseholdServiceCommunication();
         return householdServiceCommunication.getHouseholdForUserId(id);
     }
+
+    /**
+     * Gets the user from the google id
+     * @param id the google id to find by
+     * @return the user
+     */
+    public User getUserFromGoogleId(String id) {
+        User user = this.userRepository.findByGoogleId(id);
+
+        return user;
+    }
 }

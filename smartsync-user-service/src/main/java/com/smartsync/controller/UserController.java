@@ -203,6 +203,27 @@ public class UserController {
         return ResponseEntity.ok(household);
     }
 
+    /**
+     * Gets the user with the google id
+     * @param googleId the google id to find by
+     * @return the user with the google id
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/google/{id}")
+    public ResponseEntity getUserFromGoogleId(@PathVariable("id") String googleId) {
+
+        User user = this.userService.getUserFromGoogleId(googleId);
+
+        if(user == null) {
+            String message = "Could not find user with google id " + googleId + ".";
+            String url = "/users/google/" + googleId;
+
+            logger.error(message);
+            throw new UserNotFoundException(message, url);
+        }
+
+        return ResponseEntity.ok(user);
+    }
+
 
     /**
      * Handles the user not found exception
