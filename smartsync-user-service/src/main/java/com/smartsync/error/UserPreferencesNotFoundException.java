@@ -6,7 +6,7 @@ package com.smartsync.error;
  *
  * User Not Found Exception which is thrown when the user that is tyring to be accessed is not found in the database.
  */
-public class UserNotFoundException extends RuntimeException {
+public class UserPreferencesNotFoundException extends RuntimeException {
 
     /**
      * The url which the error occured
@@ -18,7 +18,7 @@ public class UserNotFoundException extends RuntimeException {
      */
     private String message;
 
-    public UserNotFoundException(String message, String url) {
+    public UserPreferencesNotFoundException(String message, String url) {
         this.message = message;
         this.url = url;
     }
