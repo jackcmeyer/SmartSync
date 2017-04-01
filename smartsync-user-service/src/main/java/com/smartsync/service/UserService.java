@@ -78,7 +78,7 @@ public class UserService {
         UserPreferencesDTO userPreferencesDTO = new UserPreferencesDTO(savedUser.getUserId(),
                 "Default Preferences", "#3b5156", "#00ffab", "#969696", "#313131", "jack");
         this.userPreferencesService.addUserPreferences(userPreferencesDTO);
-        
+
         return savedUser;
     }
 
