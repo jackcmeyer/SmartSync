@@ -1,5 +1,6 @@
 package com.smartsync.service;
 
+import com.smartsync.dto.UserPreferencesDTO;
 import com.smartsync.model.User;
 import com.smartsync.model.UserRepository;
 import communication.HouseholdServiceCommunication;
@@ -22,6 +23,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserPreferencesService userPreferencesService;
 
     public UserService() {
 
@@ -70,6 +74,11 @@ public class UserService {
      */
     public User addUser(User user) {
         User savedUser = this.userRepository.save(user);
+
+        UserPreferencesDTO userPreferencesDTO = new UserPreferencesDTO(savedUser.getUserId(),
+                "Default Preferences", "#3b5156", "#00ffab", "#969696", "#313131", "jack");
+        this.userPreferencesService.addUserPreferences(userPreferencesDTO);
+        
         return savedUser;
     }
 
