@@ -1,9 +1,11 @@
 package com.smartsync.controller;
 
+import com.smartsync.dto.UpdateUserDTO;
 import com.smartsync.dto.UserDTO;
 import com.smartsync.error.*;
 import com.smartsync.model.User;
 import com.smartsync.service.UserService;
+import com.smartsync.validator.UpdateUserValidator;
 import com.smartsync.validator.UserValidator;
 import com.smartsync.validator.ValidationError;
 import com.smartsync.validator.ValidationErrorBuilder;
@@ -125,15 +127,15 @@ public class UserController {
 
     /**
      * Updates the user information
-     * @param userDTO the user information to update
+     * @param updateUserDTO the user information to update
      * @param errors an error container
      * @return the udpated user
      */
     @RequestMapping(method = RequestMethod.PUT, value = "/", produces = "application/json")
-    public ResponseEntity updateUser(@RequestBody UserDTO userDTO, Errors errors) {
+    public ResponseEntity updateUser(@RequestBody UpdateUserDTO updateUserDTO, Errors errors) {
 
-        UserValidator userValidator = new UserValidator();
-        userValidator.validate(userDTO, errors);
+        UpdateUserValidator userValidator = new UpdateUserValidator();
+        userValidator.validate(updateUserDTO, errors);
 
         ValidationError validationError = ValidationErrorBuilder.fromBindErrors(errors);
 
@@ -141,7 +143,7 @@ public class UserController {
             throw new IllegalRequestFormatException("Could not update user.", "/users", validationError);
         }
 
-        User updatedUser = this.userService.updateUser(new User(userDTO));
+        User updatedUser = this.userService.updateUser(updateUserDTO);
 
         return ResponseEntity.ok(updatedUser);
     }

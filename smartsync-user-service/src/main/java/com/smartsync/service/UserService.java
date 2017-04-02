@@ -1,5 +1,6 @@
 package com.smartsync.service;
 
+import com.smartsync.dto.UpdateUserDTO;
 import com.smartsync.dto.UserPreferencesDTO;
 import com.smartsync.model.User;
 import com.smartsync.model.UserRepository;
@@ -8,7 +9,6 @@ import model.HouseholdPOJO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -87,8 +87,7 @@ public class UserService {
      * @param user the user to udate
      * @return the new user
      */
-    @Transactional
-    public User updateUser(User user) {
+    public User updateUser(UpdateUserDTO user) {
 
         User savedUser = this.userRepository.findByUserId(user.getUserId());
 
@@ -98,9 +97,9 @@ public class UserService {
         savedUser.setGivenName(user.getFamilyName());
         savedUser.setImageURL(user.getImageURL());
         savedUser.setRole(user.getRole());
-        savedUser.setUserId(user.getUserId());
-
         savedUser.setLastUpdated(new Date());
+
+        this.userRepository.save(savedUser);
 
         return savedUser;
 
