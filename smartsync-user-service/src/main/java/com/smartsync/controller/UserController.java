@@ -226,6 +226,38 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    /**
+     * Gets the user with the google id
+     * @param googleId the google id to find by
+     * @return the user with the google id
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/google/{id}/household")
+    public ResponseEntity getUserHouseholdFromGoogleId(@PathVariable("id") String googleId) {
+
+        User user = this.userService.getUserByGoogleId(googleId);
+
+        if(user == null) {
+            String message = "Could not find user with googleId " + googleId + ".";
+            String url = "/users/" + googleId + "/households";
+
+            logger.error(message);
+            throw new UserNotFoundException(message, url);
+        }
+
+        HouseholdPOJO household = this.userService.getHouseholdForUserId(user.getUserId());
+
+        if(household == null) {
+            String message = "Could not find household for user with id " + user.getUserId() + ".";
+            String url = "/users/" + user.getUserId() + "household";
+
+            logger.error(message);
+            throw new HouseholdNotFoundException(message, url);
+        }
+
+        logger.info("Successfully found household " + household);
+
+        return ResponseEntity.ok(household);
+    }
 
     /**
      * Handles the user not found exception
