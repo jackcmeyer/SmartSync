@@ -1,17 +1,15 @@
 package com.smartsync.validator;
 
+import com.smartsync.dto.HouseholdDTO;
 import com.smartsync.dto.UpdateHouseholdDTO;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 /**
- * @author Jack Meyer (jackcmeyer@gmail.com)
- *
- * The household validator class. Validates the data sent into the api and adds any errors to the errors object
+ * Created by gregory on 4/1/17.
  */
-public class HouseholdValidator implements Validator {
-
+public class UpdateHouseholdValidator implements Validator{
 
     public boolean supports(Class clazz) {
         return UpdateHouseholdDTO.class.equals(clazz);
@@ -55,3 +53,4 @@ public class HouseholdValidator implements Validator {
         }
     }
 }
+

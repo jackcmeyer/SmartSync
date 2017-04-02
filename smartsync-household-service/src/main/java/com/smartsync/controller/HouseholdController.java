@@ -1,6 +1,7 @@
 package com.smartsync.controller;
 
 import com.smartsync.dto.UserAndHouseholdDTO;
+import com.smartsync.dto.UpdateHouseholdDTO;
 import com.smartsync.dto.HouseholdDTO;
 import com.smartsync.error.*;
 import com.smartsync.model.Household;
@@ -8,6 +9,7 @@ import com.smartsync.model.HouseholdUserLookup;
 import com.smartsync.service.HouseholdService;
 import com.smartsync.service.HouseholdUserLookupService;
 import com.smartsync.validator.UserAndHouseholdValidator;
+import com.smartsync.validator.UpdateHouseholdValidator;
 import com.smartsync.validator.HouseholdValidator;
 import com.smartsync.validator.ValidationError;
 import com.smartsync.validator.ValidationErrorBuilder;
@@ -347,6 +349,29 @@ public class HouseholdController {
         logger.info("Successfully found household for user with id " + userId + ": " + household);
         return ResponseEntity.ok(household);
 
+    }
+
+    /**
+     * Updates the househole information
+     * @param updateHouseholdDTO the user information to update
+     * @param errors an error container
+     * @return the udpated user
+     */
+    @RequestMapping(method = RequestMethod.PUT, value = "/", produces = "application/json")
+    public ResponseEntity updateHousehold(@RequestBody UpdateHouseholdDTO updateHouseholdDTO, Errors errors) {
+
+        UpdateHouseholdValidator houseValidator = new UpdateHouseholdValidator();
+        houseValidator.validate(updateHouseholdDTO, errors);
+
+        ValidationError validationError = ValidationErrorBuilder.fromBindErrors(errors);
+
+        if(errors.hasErrors()) {
+            throw new IllegalRequestFormatException("Could not update household.", "/household", validationError);
+        }
+
+        Household updatedHousehold= this.householdService.updateHousehold(updateHouseholdDTO);
+
+        return ResponseEntity.ok(updatedHousehold);
     }
 
     /**

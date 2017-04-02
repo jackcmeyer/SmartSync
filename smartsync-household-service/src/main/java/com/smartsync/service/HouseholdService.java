@@ -1,10 +1,12 @@
 package com.smartsync.service;
 
 import com.smartsync.model.Household;
+import com.smartsync.dto.UpdateHouseholdDTO;
 import com.smartsync.model.HouseholdRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -59,6 +61,30 @@ public class HouseholdService {
     }
 
     /**
+     * Update household in the database
+     *
+     * @param household the household to add
+     *
+     * @return the household that was added
+     */
+    public Household updateHousehold(UpdateHouseholdDTO household) {
+        Household savedHousehold = this.householdRepository.findByHouseholdId(household.getHouseholdId());
+
+        savedHousehold.setCity(household.getCity());
+        savedHousehold.setFirstAddressLine(household.getFirstAddressLine());
+        savedHousehold.setHouseholdName(household.getHouseholdName());
+        savedHousehold.setSecondAddressLine(household.getSecondAddressLine());
+        savedHousehold.setState(household.getState());
+        savedHousehold.setZipCode(household.getZipCode());
+        savedHousehold.setLastUpdated(new Date());
+
+        this.householdRepository.save(savedHousehold);
+
+        return savedHousehold;
+
+    }
+
+    /**
      * Deletes the household with the current id.
      * @param id
      * @return
@@ -77,4 +103,6 @@ public class HouseholdService {
             return household;
         }
     }
+
+
 }
