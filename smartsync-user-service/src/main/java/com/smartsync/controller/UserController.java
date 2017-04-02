@@ -72,6 +72,28 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    /**
+     * Gets a user by their email
+     * @param email the email to find by
+     * @return the response entity with the user information
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/email/{email}", produces = "application/json")
+    public ResponseEntity getUserByEmail(@PathVariable("email") String email) {
+        User user = this.userService.getUserByEmail(email);
+
+        if(user == null) {
+
+            String message = "Could not find user with email " + email + ".";
+            String url = "/users/email/" + email;
+
+            logger.error(message);
+            throw new UserNotFoundException(message, url);
+        }
+
+        logger.info("Successfully got user information: " + user);
+        return ResponseEntity.ok(user);
+    }
+
 
     /**
      * Adds a new user to the database
