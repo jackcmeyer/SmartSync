@@ -197,7 +197,7 @@ public class HouseholdController {
         // check if there was any errors with the request body
         if(errors.hasErrors()) {
             ValidationError validationError = ValidationErrorBuilder.fromBindErrors(errors);
-            String message = "Could not create new household.";
+            String message = "Could not add user to household.";
             String url = "/households/users";
 
             logger.error("Could not create new household: " + errors);
@@ -248,7 +248,6 @@ public class HouseholdController {
             throw new HouseholdNotFoundException(message, url);
         }
 
-
         logger.info("Successfully added user  with id " + userId + " to the household with id " + id);
         return ResponseEntity.ok().body(savedHouseholdUserLookUp);
 
@@ -256,31 +255,17 @@ public class HouseholdController {
 
     /**
      * Removes a user from a household
-     * @param userAndHouseholdDTO the user and household to remove
-     * @param errors the errors
+     * @param id the household id
+     * @param userId the userId
      * @return the response entity with the UserHouseHoldLookUp that was removed
      */
-    @RequestMapping(method = RequestMethod.DELETE, value = "/users", produces = "application/json")
-    public ResponseEntity removeUserFromHousehold(@RequestBody UserAndHouseholdDTO userAndHouseholdDTO, Errors errors) {
+    @RequestMapping(method = RequestMethod.DELETE, value = "{id}/users/{userId}", produces = "application/json")
+    public ResponseEntity removeUserFromHousehold(@PathVariable("id") Long id, @PathVariable("userId") Long userId) {
 
-        UserAndHouseholdValidator userAndHouseholdValidator = new UserAndHouseholdValidator();
-        userAndHouseholdValidator.validate(userAndHouseholdDTO, errors);
-        ValidationError validationError = ValidationErrorBuilder.fromBindErrors(errors);
-
-
-        // if there were missing information from the request
-        if(errors.hasErrors()) {
-            String message = "Could not remove user from household";
-            String url = "/households/users";
-
-            logger.error(message + " " + validationError);
-            throw new IllegalRequestFormatException(message, url, validationError);
-        }
-
-        UserPOJO userPOJO = this.userServiceCommunication.getUser(userAndHouseholdDTO.getUserId());
+        UserPOJO userPOJO = this.userServiceCommunication.getUser(userId);
         // if the user does not exist
         if(userPOJO == null) {
-            String message = "Could not remove user with id: " + userAndHouseholdDTO.getUserId() + " because the user" +
+            String message = "Could not remove user with id: " + userId + " because the user" +
                     "does not exist";
             String url = "/households/users";
 
@@ -289,10 +274,10 @@ public class HouseholdController {
         }
 
         // check if the household exists
-        Household household = this.householdService.getHouseHoldById(userAndHouseholdDTO.getHouseholdId());
+        Household household = this.householdService.getHouseHoldById(id);
         if(household == null) {
-            String message = "Could not remove user with id: " + userAndHouseholdDTO.getUserId() + " because the " +
-                    "household with id: " + userAndHouseholdDTO.getHouseholdId() + " does not exist";
+            String message = "Could not remove user with id: " + id + " because the " +
+                    "household with id: " + id + " does not exist";
             String url = "/households/users";
 
             logger.error(message);
@@ -300,13 +285,13 @@ public class HouseholdController {
         }
 
         HouseholdUserLookup householdUserLookup =
-                this.householdUserLookupService.removeUserFromHousehold(userAndHouseholdDTO.getUserId(),
-                        userAndHouseholdDTO.getHouseholdId());
+                this.householdUserLookupService.removeUserFromHousehold(userId,
+                        id);
 
         // check if the user was actually in the household
         if(householdUserLookup == null) {
-            String message = "Error removing user with id: " + userAndHouseholdDTO.getUserId() + " from household with" +
-                    "id "  + userAndHouseholdDTO.getHouseholdId();
+            String message = "Error removing user with id: " + userId + " from household with" +
+                    "id "  + id;
             String url = "/households/users";
 
             logger.error(message);
