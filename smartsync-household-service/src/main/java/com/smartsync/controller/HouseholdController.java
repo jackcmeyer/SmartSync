@@ -182,6 +182,31 @@ public class HouseholdController {
     }
 
     /**
+     * Gets the services associated with this household.
+     * @param id the household id
+     * @return list of users in the household
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/{id}/services", produces = "application/json")
+    public ResponseEntity getHouseholdServices(@PathVariable("id") Long id) {
+
+        Household household = this.householdService.getHouseHoldById(id);
+        if(household == null) {
+            String message = "Could not find household with id " + id + ".";
+            String url = "households/" + id + "/users";
+
+            logger.error(message);
+            throw new HouseholdNotFoundException(message, url);
+        }
+
+
+        List<ServicePOJO> services = this.householdServiceLookupService.getHouseholdServices(id);
+
+        logger.info("Successfully found users in household with id " + id + "\n" + services);
+        return ResponseEntity.ok(services);
+
+    }
+
+    /**
      * Adds a user to a household
      *
      * @param userAndHouseholdDTO the add user to household dto

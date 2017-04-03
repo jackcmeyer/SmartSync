@@ -23,6 +23,8 @@ handler()
     kill -9 $PID8
     echo "kill -9 $PID9"
     kill -9 $PID9
+    echo "kill -9 $PID10"
+    kill -9 $PID10
 }
 
 # Colors
@@ -60,6 +62,7 @@ while [[ $# -gt 0 ]] ; do
       echo "    - smartsync-household-service"
       echo "    - smartsync-invite-service"
       echo "    - smartsync-weather-service"
+      echo "    - smartsync-service-service"
 	    exit
 	    ;;
     esac
@@ -75,7 +78,8 @@ echo -e "    smartsync-api-gateway:        8000"
 echo -e "    smartsync-user-service:       8001"
 echo -e "    smartsync-household-service   8002"
 echo -e "    smartsync-invite-service      8003"
-echo -e "    smartsync-weather-service     8004${C_NRM}"
+echo -e "    smartsync-weather-service     8004"
+echo -e "    smartsync-service-service     8006${C_NRM}"
 sleep 2
 
 # Run maven package on services
@@ -107,7 +111,10 @@ if [ "$SS_BUILD" = true ] ; then
     echo -e "${C_YEL}cd smartsync-weather-service; mvn package${C_NRM}"
     cd ../smartsync-weather-service
     mvn package
-    cd ..
+    cd ../smartsync-service-service
+    echo -e "${C_YEL}cd smartsync-service-service; mvn package${C_NRM}"
+    mvn package
+    
 fi
 
 echo -e "${C_YEL}java -jar smartsync-config-service/target/smartsync-config-service-0.0.1-SNAPSHOT.jar${C_NRM}"
@@ -134,7 +141,6 @@ PID4=$!
 echo $PID4
 sleep 10
 
-
 echo -e "${C_YEL}java -jar smartsync-api-gateway/target/smartsync-api-gateway-0.0.1-SNAPSHOT.jar${C_NRM}"
 java -jar smartsync-api-gateway/target/smartsync-api-gateway-0.0.1-SNAPSHOT.jar &
 PID5=$!
@@ -159,5 +165,10 @@ echo -e "${C_YEL}java -jar smartsync-weather-service/target/smartsync-weather-se
 java -jar smartsync-weather-service/target/smartsync-weather-service-0.0.1-SNAPSHOT.jar &
 PID9=$!
 echo $PID9
+
+#echo -e "${C_YEL}java -jar smartsync-service-service/target/smartsync-service-service-0.0.1-SNAPSHOT.jar${C_NRM}"
+#java -jar smartsync-service-service/target/smartsync-service-service-0.0.1-SNAPSHOT.jar &
+#PID10=$!
+#echo $PID10
 
 wait
