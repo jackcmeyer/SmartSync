@@ -121,16 +121,16 @@ public class UserService {
         }
 
         else {
-
             HouseholdServiceCommunication householdServiceCommunication = new HouseholdServiceCommunication();
             HouseholdPOJO householdPOJO = householdServiceCommunication.getHouseholdForUserId(id);
 
-            HashMap<String, String> parameters = new HashMap<>();
-            parameters.put("userId", Long.toString(id));
-            parameters.put("householdId", Long.toString(householdPOJO.getHouseholdId()));
+            if(householdPOJO != null) {
+                HashMap<String, String> parameters = new HashMap<>();
+                parameters.put("userId", Long.toString(id));
+                parameters.put("householdId", Long.toString(householdPOJO.getHouseholdId()));
 
-            householdServiceCommunication.removeUserFromHousehold(parameters);
-
+                householdServiceCommunication.removeUserFromHousehold(parameters);
+            }
 
             this.userRepository.delete(deletedUser);
 
