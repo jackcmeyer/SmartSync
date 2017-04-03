@@ -77,8 +77,9 @@ public class UserController {
      * @param email the email to find by
      * @return the response entity with the user information
      */
-    @RequestMapping(method = RequestMethod.GET, value = "/email/{email}", produces = "application/json")
+    @RequestMapping(method = RequestMethod.GET, value = "/email/{email}/", produces = "application/json")
     public ResponseEntity getUserByEmail(@PathVariable("email") String email) {
+        
         User user = this.userService.getUserByEmail(email);
 
         if(user == null) {
