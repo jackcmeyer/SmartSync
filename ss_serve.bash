@@ -117,57 +117,57 @@ if [ "$SS_BUILD" = true ] ; then
     cd ../
 fi
 
-echo -e "${C_YEL}java -jar smartsync-config-service/target/smartsync-config-service-0.0.1-SNAPSHOT.jar${C_NRM}"
-java -Xms64m -Xmx64m -jar smartsync-config-service/target/smartsync-config-service-0.0.1-SNAPSHOT.jar &
+echo -e "${C_YEL}nohup java -jar smartsync-config-service/target/smartsync-config-service-0.0.1-SNAPSHOT.jar${C_NRM}"
+nohup java -Xms64m -Xmx64m -jar smartsync-config-service/target/smartsync-config-service-0.0.1-SNAPSHOT.jar &
 PID1=$!
 echo $PID1
 sleep 20
 
-echo -e "${C_YEL}java -jar smartsync-eureka-service/target/smartsync-eureka-service-0.0.1-SNAPSHOT.jar${C_NRM}"
-java -Xms64m -Xmx64m -jar smartsync-eureka-service/target/smartsync-eureka-service-0.0.1-SNAPSHOT.jar &
+echo -e "${C_YEL}nohup java -jar smartsync-eureka-service/target/smartsync-eureka-service-0.0.1-SNAPSHOT.jar${C_NRM}"
+nohup java -Xms64m -Xmx64m -jar smartsync-eureka-service/target/smartsync-eureka-service-0.0.1-SNAPSHOT.jar &
 PID2=$!
 echo $PID2
 sleep 20
 
-echo -e "${C_YEL}java -jar smartsync-hystrix-dashboard/target/smartsync-hystrix-dashboard-0.0.1-SNAPSHOT.jar${C_NRM}"
-java -Xms64m -Xmx64m -jar smartsync-hystrix-dashboard/target/smartsync-hystrix-dashboard-0.0.1-SNAPSHOT.jar &
+echo -e "${C_YEL}nohup java -jar smartsync-hystrix-dashboard/target/smartsync-hystrix-dashboard-0.0.1-SNAPSHOT.jar${C_NRM}"
+nohup java -Xms64m -Xmx64m -jar smartsync-hystrix-dashboard/target/smartsync-hystrix-dashboard-0.0.1-SNAPSHOT.jar &
 PID3=$!
 echo $PID3
 sleep 10
 
-echo -e "${C_YEL}java -jar smartsync-zipkin-service/target/smartsync-zipkin-service-0.0.1-SNAPSHOT.jar${C_NRM}"
-java -Xms64m -Xmx64m -jar smartsync-zipkin-service/target/smartsync-zipkin-service-0.0.1-SNAPSHOT.jar &
+echo -e "${C_YEL}nohup java -jar smartsync-zipkin-service/target/smartsync-zipkin-service-0.0.1-SNAPSHOT.jar${C_NRM}"
+nohup java -Xms64m -Xmx64m -jar smartsync-zipkin-service/target/smartsync-zipkin-service-0.0.1-SNAPSHOT.jar &
 PID4=$!
 echo $PID4
 sleep 10
 
-echo -e "${C_YEL}java -jar smartsync-api-gateway/target/smartsync-api-gateway-0.0.1-SNAPSHOT.jar${C_NRM}"
-java -Xms64m -Xmx64m -jar smartsync-api-gateway/target/smartsync-api-gateway-0.0.1-SNAPSHOT.jar &
+echo -e "${C_YEL}nohup java -jar smartsync-api-gateway/target/smartsync-api-gateway-0.0.1-SNAPSHOT.jar${C_NRM}"
+nohup java -Xms64m -Xmx64m -jar smartsync-api-gateway/target/smartsync-api-gateway-0.0.1-SNAPSHOT.jar &
 PID5=$!
 echo $PID5
 
-echo -e "${C_YEL}java -jar smartsync-user-serivce/target/smartsync-user-service-0.0.1-SNAPSHOT.jar${C_NRM}"
-java -Xms64m -Xmx64m -jar smartsync-user-service/target/smartsync-user-service-0.0.1-SNAPSHOT.jar &
+echo -e "${C_YEL}nohup java -jar smartsync-user-serivce/target/smartsync-user-service-0.0.1-SNAPSHOT.jar${C_NRM}"
+nohup java -Xms64m -Xmx64m -jar smartsync-user-service/target/smartsync-user-service-0.0.1-SNAPSHOT.jar &
 PID6=$!
 echo $PID6
 
-echo -e "${C_YEL}java -jar smartsync-household-service/target/smartsync-household-service-0.0.1-SNAPSHOT.jar${C_NRM}"
-java -Xms64m -Xmx64m -jar smartsync-household-service/target/smartsync-household-service-0.0.1-SNAPSHOT.jar &
+echo -e "${C_YEL}nohup java -jar smartsync-household-service/target/smartsync-household-service-0.0.1-SNAPSHOT.jar${C_NRM}"
+nohup java -Xms64m -Xmx64m -jar smartsync-household-service/target/smartsync-household-service-0.0.1-SNAPSHOT.jar &
 PID7=$!
 echo $PID7
 
-echo -e "${C_YEL}java -jar smartsync-invite-service/target/smartsync-invite-service-0.0.1-SNAPSHOT.jar${C_NRM}"
-java -Xms64m -Xmx64m -jar smartsync-invite-service/target/smartsync-invite-service-0.0.1-SNAPSHOT.jar &
+echo -e "${C_YEL}nohup java -jar smartsync-invite-service/target/smartsync-invite-service-0.0.1-SNAPSHOT.jar${C_NRM}"
+nohup java -Xms64m -Xmx64m -jar smartsync-invite-service/target/smartsync-invite-service-0.0.1-SNAPSHOT.jar &
 PID8=$!
 echo $PID8
 
-echo -e "${C_YEL}java -jar smartsync-weather-service/target/smartsync-weather-service-0.0.1-SNAPSHOT.jar${C_NRM}"
-java -Xms64m -Xmx64m -jar smartsync-weather-service/target/smartsync-weather-service-0.0.1-SNAPSHOT.jar &
+echo -e "${C_YEL}nohup java -jar smartsync-weather-service/target/smartsync-weather-service-0.0.1-SNAPSHOT.jar${C_NRM}"
+nohup java -Xms64m -Xmx64m -jar smartsync-weather-service/target/smartsync-weather-service-0.0.1-SNAPSHOT.jar &
 PID9=$!
 echo $PID9
 
-echo -e "${C_YEL}java -jar smartsync-service-service/target/smartsync-service-service-0.0.1-SNAPSHOT.jar${C_NRM}"
-java -Xms64m -Xmx64m -jar smartsync-service-service/target/smartsync-service-service-0.0.1-SNAPSHOT.jar &
+echo -e "${C_YEL}nohup java -jar smartsync-service-service/target/smartsync-service-service-0.0.1-SNAPSHOT.jar${C_NRM}"
+nohup java -Xms64m -Xmx64m -jar smartsync-service-service/target/smartsync-service-service-0.0.1-SNAPSHOT.jar &
 PID10=$!
 echo $PID10
 

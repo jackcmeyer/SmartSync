@@ -15,7 +15,8 @@ import java.util.*;
  */
 public class UserServiceCommunication {
 
-    private static final String USER_BASE_URL = "http://localhost:8000/users/";
+   // private static final String USER_BASE_URL = "http://localhost:8000/users/";
+   private static final String HOUSEHOLD_BASE_URL = "http://proj-339-smartsync.ece.iastate.edu:8000/users/";
 
     /**
      * Gets all users
