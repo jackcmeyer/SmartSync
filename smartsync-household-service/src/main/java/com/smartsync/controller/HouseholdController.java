@@ -1,19 +1,20 @@
 package com.smartsync.controller;
 
+import com.smartsync.dto.ServiceAndHouseholdDTO;
 import com.smartsync.dto.UserAndHouseholdDTO;
 import com.smartsync.dto.UpdateHouseholdDTO;
 import com.smartsync.dto.HouseholdDTO;
 import com.smartsync.error.*;
 import com.smartsync.model.Household;
+import com.smartsync.model.HouseholdServiceLookup;
 import com.smartsync.model.HouseholdUserLookup;
 import com.smartsync.service.HouseholdService;
+import com.smartsync.service.HouseholdServiceLookupService;
 import com.smartsync.service.HouseholdUserLookupService;
-import com.smartsync.validator.UserAndHouseholdValidator;
-import com.smartsync.validator.UpdateHouseholdValidator;
-import com.smartsync.validator.HouseholdValidator;
-import com.smartsync.validator.ValidationError;
-import com.smartsync.validator.ValidationErrorBuilder;
+import com.smartsync.validator.*;
+import communication.ServiceServiceCommunication;
 import communication.UserServiceCommunication;
+import model.ServicePOJO;
 import model.UserPOJO;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,10 +40,14 @@ public class HouseholdController {
     private HouseholdService householdService;
 
     private UserServiceCommunication userServiceCommunication = new UserServiceCommunication();
+    private ServiceServiceCommunication serviceServiceCommunication = new ServiceServiceCommunication();
 
 
     @Autowired
     private HouseholdUserLookupService householdUserLookupService;
+
+    @Autowired
+    private HouseholdServiceLookupService householdServiceLookupService;
 
     public HouseholdController() {
 
@@ -192,7 +197,7 @@ public class HouseholdController {
         Household household = this.householdService.getHouseHoldById(id);
         if(household == null) {
             String message = "Could not find household with id " + id + ".";
-            String url = "households/" + id + "/users";
+            String url = "households/" + id + "/services";
 
             logger.error(message);
             throw new HouseholdNotFoundException(message, url);
@@ -204,6 +209,115 @@ public class HouseholdController {
         logger.info("Successfully found users in household with id " + id + "\n" + services);
         return ResponseEntity.ok(services);
 
+    }
+
+    /**
+     * Adds a service to a household
+     *
+     * @param serviceAndHouseholdDTO the add service to household dto
+     *
+     * @return success
+     */
+    @RequestMapping(method = RequestMethod.POST, value = "/services", produces = "application/json")
+    public ResponseEntity addServiceToHousehold(@RequestBody ServiceAndHouseholdDTO serviceAndHouseholdDTO, Errors errors) {
+
+        ServiceAndHouseholdValidator serviceAndHouseholdValidator = new ServiceAndHouseholdValidator();
+        serviceAndHouseholdValidator.validate(serviceAndHouseholdDTO, errors);
+
+        // check if there was any errors with the request body
+        if(errors.hasErrors()) {
+            ValidationError validationError = ValidationErrorBuilder.fromBindErrors(errors);
+            String message = "Could not add service to household.";
+            String url = "/households/service";
+
+            logger.error("Could not create new household service: " + errors);
+            throw new IllegalRequestFormatException(message, url, validationError);
+        }
+
+        Long serviceId = serviceAndHouseholdDTO.getServiceId();
+        Long id = serviceAndHouseholdDTO.getHouseholdId();
+
+        // check if the user exists
+        ServicePOJO service = serviceServiceCommunication.getService(serviceId);
+        if(service == null) {
+            String message = "Could not find service with id " + serviceId + ".";
+            String url = "/households/service/";
+            logger.error(message);
+
+            throw new ServiceNotFoundException(message, url);
+        }
+
+        // check if the household exists
+        Household household = this.householdService.getHouseHoldById(id);
+        if(household == null) {
+            String message = "Could not find household with id " + id + ".";
+            String url = "/households/service";
+
+            logger.error(message);
+            throw new HouseholdNotFoundException(message, url);
+        }
+
+        // error adding the user to the household
+        HouseholdServiceLookup savedHouseholdServiceLookUp = this.householdServiceLookupService.addServiceToHouseHold(serviceId, id);
+        if(savedHouseholdServiceLookUp == null) {
+            String message = "Could not add service with id " + serviceId + " to household with id " + id;
+            String url = "/households/service";
+
+            logger.error(message);
+            throw new HouseholdNotFoundException(message, url);
+        }
+
+        logger.info("Successfully added service with id " + serviceId + " to the household with id " + id);
+        return ResponseEntity.ok().body(savedHouseholdServiceLookUp);
+
+    }
+
+    /**
+     * Removes a service from a household
+     * @param id the household id
+     * @param serviceId the userId
+     * @return the response entity with the UserHouseHoldLookUp that was removed
+     */
+    @RequestMapping(method = RequestMethod.DELETE, value = "{id}/services/{serviceId}", produces = "application/json")
+    public ResponseEntity removeServiceFromHousehold(@PathVariable("id") Long id, @PathVariable("serviceId") Long serviceId) {
+
+        ServicePOJO servicePOJO = this.serviceServiceCommunication.getService(serviceId);
+        // if the user does not exist
+        if(servicePOJO == null) {
+            String message = "Could not remove service with id: " + serviceId + " because the service" +
+                    "does not exist";
+            String url = "/households/service";
+
+            logger.error(message);
+            throw new ServiceNotFoundException(message, url);
+        }
+
+        // check if the household exists
+        Household household = this.householdService.getHouseHoldById(id);
+        if(household == null) {
+            String message = "Could not remove service with id: " + id + " because the " +
+                    "household with id: " + id + " does not exist";
+            String url = "/households/service";
+
+            logger.error(message);
+            throw new HouseholdNotFoundException(message, url);
+        }
+
+        HouseholdServiceLookup householdServiceLookup =
+                this.householdServiceLookupService.removeServiceFromHousehold(serviceId,
+                        id);
+
+        // check if the user was actually in the household
+        if(householdServiceLookup == null) {
+            String message = "Error removing service with id: " + serviceId + " from household with" +
+                    "id "  + id;
+            String url = "/households/service";
+
+            logger.error(message);
+            throw new HouseholdNotFoundException(message, url);
+        }
+
+        return ResponseEntity.ok(householdServiceLookup);
     }
 
     /**

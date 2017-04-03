@@ -23,6 +23,9 @@ public class HouseholdService {
     @Autowired
     private HouseholdUserLookupService householdUserLookupService;
 
+    @Autowired
+    private HouseholdServiceLookupService householdServiceLookupService;
+
     public HouseholdService() {
 
     }

@@ -27,17 +27,17 @@ public class UpdateServiceDTO {
     /**
      * The user's family name
      */
-    private Boolean isActive;
+    private int isActive;
 
     /**
      * The user's image url. This is a link to their google profile picture
      */
-    private Boolean wide;
+    private int wide;
 
     /**
      * The user's email. This is the google email.
      */
-    private Boolean tall;
+    private int tall;
 
     /**
      * The date that the user was created
@@ -57,7 +57,7 @@ public class UpdateServiceDTO {
      * @param wide
      * @param tall
      */
-    public UpdateServiceDTO(String name, String description, Boolean isActive, Boolean wide, Boolean tall) {
+    public UpdateServiceDTO(String name, String description, int isActive, int wide, int tall) {
         this.name = name;
         this.description = description;
         this.isActive = isActive;
@@ -81,17 +81,17 @@ public class UpdateServiceDTO {
 
     public void setName(String name){ this.name = name; }
 
-    public Boolean getIsActive(){ return this.isActive; }
+    public int getIsActive(){ return this.isActive; }
 
-    public void setIsActive(Boolean isActive ){ this.isActive = isActive; }
+    public void setIsActive(int isActive ){ this.isActive = isActive; }
 
-    public Boolean getWide(){ return this.wide; }
+    public int getWide(){ return this.wide; }
 
-    public void setWide(Boolean wide){ this.wide = wide; }
+    public void setWide(int wide){ this.wide = wide; }
 
-    public Boolean getTall(){ return this.tall; }
+    public int getTall(){ return this.tall; }
 
-    public void setTall(Boolean tall){ this.tall = tall; }
+    public void setTall(int tall){ this.tall = tall; }
 
     public Date getCreated(){ return this.created; }
 

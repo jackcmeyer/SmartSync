@@ -2,6 +2,7 @@ package com.smartsync.service;
 
 import com.smartsync.model.HouseholdServiceLookup;
 import com.smartsync.model.HouseholdServiceLookupRepository;
+import communication.ServiceServiceCommunication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import model.ServicePOJO;
@@ -12,7 +13,9 @@ import java.util.List;
 /**
  * Created by gregory on 4/2/17.
  */
+@Component
 public class HouseholdServiceLookupService {
+
     @Autowired
     private HouseholdServiceLookupRepository householdServiceLookupRepository;
 

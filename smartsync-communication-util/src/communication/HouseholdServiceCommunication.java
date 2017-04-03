@@ -3,6 +3,7 @@ package communication;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import model.HouseholdPOJO;
+import model.HouseholdServiceLookUpPOJO;
 import model.HouseholdUserLookUpPOJO;
 import util.HttpUtil;
 
@@ -171,6 +172,63 @@ public class HouseholdServiceCommunication {
     }
 
     /**
+     * Adds a service to household
+     * @param parameters
+     * @return
+     */
+    public HouseholdServiceLookUpPOJO addServiceToHousehold(HashMap<String, String> parameters) {
+        // create request parameter string
+        Iterator iterator = parameters.entrySet().iterator();
+        StringBuilder builder = new StringBuilder();
+        builder.append("{");
+        while(iterator.hasNext()) {
+            Map.Entry pair = (Map.Entry) iterator.next();
+            builder.append("\"" + pair.getKey() + "\" : " + "\"" +pair.getValue() + "\", ");
+        }    String requestBody = builder.toString();
+
+        requestBody = requestBody.substring(0, requestBody.length()-2);
+        requestBody = requestBody + "}";
+
+        try {
+            String json = HttpUtil.executePostRequest(HOUSEHOLD_BASE_URL + "services", requestBody);
+            return jsonToHouseholdServiceLookup(json);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Removes a service from the household
+     * @param parameters the parameter hashmap
+     * @return the household service lookup pojo
+     */
+    public HouseholdServiceLookUpPOJO removeServiceFromHousehold(HashMap<String, String> parameters) {
+
+        // create request parameter string
+        Iterator iterator = parameters.entrySet().iterator();
+        StringBuilder builder = new StringBuilder();
+        builder.append("{");
+        while(iterator.hasNext()) {
+            Map.Entry pair = (Map.Entry) iterator.next();
+            builder.append("\"" + pair.getKey() + "\" : " + "\"" +pair.getValue() + "\", ");
+        }    String requestBody = builder.toString();
+
+        requestBody = requestBody.substring(0, requestBody.length()-2);
+        requestBody = requestBody + "}";
+
+        try {
+            String json = HttpUtil.executeDeleteRequestWithBody(HOUSEHOLD_BASE_URL + "services", requestBody);
+            return jsonToHouseholdServiceLookup(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+
+    }
+
+    /**
      * Converts a json string into a HouseholdPOJO object
      * @param json the json string
      * @return the household pojo object
@@ -191,5 +249,16 @@ public class HouseholdServiceCommunication {
         Gson gson = new Gson();
         HouseholdUserLookUpPOJO householdUserLookUpPOJO = gson.fromJson(json, HouseholdUserLookUpPOJO.class);
         return householdUserLookUpPOJO;
+    }
+
+    /**
+     * Converts a json string into a HouseholdServiceLookupPOJO object
+     * @param json the json string
+     * @return the HouseholdUserLOokupPojo
+     */
+    private HouseholdServiceLookUpPOJO jsonToHouseholdServiceLookup(String json) {
+        Gson gson = new Gson();
+        HouseholdServiceLookUpPOJO householdServiceLookUpPOJO = gson.fromJson(json, HouseholdServiceLookUpPOJO.class);
+        return householdServiceLookUpPOJO;
     }
 }

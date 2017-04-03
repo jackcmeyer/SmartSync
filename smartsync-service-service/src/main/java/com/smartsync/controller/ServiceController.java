@@ -62,8 +62,7 @@ public class ServiceController {
         if(service == null) {
 
             String message = "Could not find service with id " + id + ".";
-            String url = "/users/" + id;
-
+            String url = "/service/" + id;
             logger.error(message);
             throw new ServiceNotFoundException(message, url);
         }

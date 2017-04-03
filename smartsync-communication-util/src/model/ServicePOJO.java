@@ -27,27 +27,27 @@ public class ServicePOJO {
     /**
      * The user's family name
      */
-    private Boolean isActive;
+    private int isActive;
 
     /**
      * The user's image url. This is a link to their google profile picture
      */
-    private Boolean wide;
+    private int wide;
 
     /**
      * The user's email. This is the google email.
      */
-    private Boolean tall;
+    private int tall;
 
     /**
      * The date that the user was created
      */
-    private Date created;
+    private String created;
 
     /**
      * The date that the user was last updated
      */
-    private Date lastUpdated;
+    private String lastUpdated;
 
 
     /**
@@ -59,15 +59,15 @@ public class ServicePOJO {
      * @param wide
      * @param tall
      */
-    public ServicePOJO(Long serviceId, String name, String description, Boolean isActive, Boolean wide, Boolean tall) {
+    public ServicePOJO(Long serviceId, String name, String description, int isActive, int wide, int tall, String created, String lastUpdated) {
         this.serviceId = serviceId;
         this.name = name;
         this.description = description;
         this.isActive = isActive;
         this.wide = wide;
         this.tall = tall;
-        this.created = new Date();
-        this.lastUpdated = new Date();
+        this.created = created;
+        this.lastUpdated = lastUpdated;
     }
 
     public ServicePOJO() {
@@ -86,23 +86,23 @@ public class ServicePOJO {
 
     public void setName(String name){ this.name = name; }
 
-    public Boolean getIsActive(){ return this.isActive; }
+    public int getIsActive(){ return this.isActive; }
 
-    public void setIsActive(Boolean isActive ){ this.isActive = isActive; }
+    public void setIsActive(int isActive ){ this.isActive = isActive; }
 
-    public Boolean getWide(){ return this.wide; }
+    public int getWide(){ return this.wide; }
 
-    public void setWide(Boolean wide){ this.wide = wide; }
+    public void setWide(int wide){ this.wide = wide; }
 
-    public Boolean getTall(){ return this.tall; }
+    public int getTall(){ return this.tall; }
 
-    public void setTall(Boolean tall){ this.tall = tall; }
+    public void setTall(int tall){ this.tall = tall; }
 
-    public Date getCreated(){ return this.created; }
+    public String getCreated(){ return this.created; }
 
-    public void setCreated(Date created){ this.created = created; }
+    public void setCreated(String created){ this.created = created; }
 
-    public Date getLastUpdated(){ return this.lastUpdated; }
+    public String getLastUpdated(){ return this.lastUpdated; }
 
-    public void setLastUpdated(Date lastUpdated){ this.lastUpdated = lastUpdated; }
+    public void setLastUpdated(String lastUpdated){ this.lastUpdated = lastUpdated; }
 }

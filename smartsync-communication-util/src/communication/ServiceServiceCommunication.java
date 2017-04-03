@@ -1,6 +1,8 @@
 package communication;
 
-import model.UserPOJO;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import model.ServicePOJO;
 import util.HttpUtil;
 
 import java.lang.reflect.Type;
@@ -83,7 +85,7 @@ public class ServiceServiceCommunication {
      *
      * @param id the id to delete by
      */
-    public UserPOJO deleteService(Long id) {
+    public ServicePOJO deleteService(Long id) {
 
         try {
             String json = HttpUtil.executeDeleteRequest(SERVICE_BASE_URL + id);
@@ -100,7 +102,7 @@ public class ServiceServiceCommunication {
      * @param json the json string
      * @return the user pojo object
      */
-    private UserPOJO jsonToService(String json) {
+    private ServicePOJO jsonToService(String json) {
         Gson gson = new Gson();
         ServicePOJO service = gson.fromJson(json, ServicePOJO.class);
 

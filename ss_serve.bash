@@ -114,7 +114,7 @@ if [ "$SS_BUILD" = true ] ; then
     cd ../smartsync-service-service
     echo -e "${C_YEL}cd smartsync-service-service; mvn package${C_NRM}"
     mvn package
-    
+    cd ../
 fi
 
 echo -e "${C_YEL}java -jar smartsync-config-service/target/smartsync-config-service-0.0.1-SNAPSHOT.jar${C_NRM}"
@@ -151,10 +151,10 @@ java -jar smartsync-user-service/target/smartsync-user-service-0.0.1-SNAPSHOT.ja
 PID6=$!
 echo $PID6
 
-echo -e "${C_YEL}java -jar smartsync-household-service/target/smartsync-household-service-0.0.1-SNAPSHOT.jar${C_NRM}"
-java -jar smartsync-household-service/target/smartsync-household-service-0.0.1-SNAPSHOT.jar &
-PID7=$!
-echo $PID7
+#echo -e "${C_YEL}java -jar smartsync-household-service/target/smartsync-household-service-0.0.1-SNAPSHOT.jar${C_NRM}"
+#java -jar smartsync-household-service/target/smartsync-household-service-0.0.1-SNAPSHOT.jar &
+#PID7=$!
+#echo $PID7
 
 echo -e "${C_YEL}java -jar smartsync-invite-service/target/smartsync-invite-service-0.0.1-SNAPSHOT.jar${C_NRM}"
 java -jar smartsync-invite-service/target/smartsync-invite-service-0.0.1-SNAPSHOT.jar &
