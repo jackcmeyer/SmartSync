@@ -44,7 +44,7 @@ public class UserValidator implements Validator {
 
         // doing specific input validaiton, so we need to make sure all of the fields are there
         if(!errors.hasErrors()) {
-            if(Integer.parseInt(user.getRole()) < 0 || Integer.parseInt(user.getRole()) > 1) {
+            if(user.getRole() < 0 || user.getRole() > 1) {
                 errors.rejectValue("role", "field.invalid", "User Role must be 0 or 1");
             }
 

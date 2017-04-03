@@ -93,6 +93,7 @@ public class UserService {
 
         savedUser.setEmail(user.getEmail());
         savedUser.setFamilyName(user.getFamilyName());
+        savedUser.setDisplayName(user.getDisplayName());
         savedUser.setFullName(user.getFullName());
         savedUser.setGivenName(user.getFamilyName());
         savedUser.setImageURL(user.getImageURL());

@@ -8,6 +8,11 @@ package com.smartsync.dto;
 public class UserDTO {
 
     /**
+     * The user id for the user.
+     */
+    private Long userId;
+
+    /**
      * The user id for the user. This is also the id for the user's google account
      */
     private String googleId;
@@ -16,6 +21,11 @@ public class UserDTO {
      * The user's full name
      */
     private String fullName;
+
+    /**
+     * The user's display name, similar to a username
+     */
+    private String displayName;
 
     /**
      * The user's given name
@@ -40,12 +50,13 @@ public class UserDTO {
     /**
      * The user's role. 0 for normal user, 1 for super user (admin)
      */
-    private String role;
+    private int role;
 
-    public UserDTO(String googleId, String fullName, String givenName, String familyName, String imageURL, String email,
-                   String role) {
+    public UserDTO(String googleId, String fullName, String displayName, String givenName, String familyName, String imageURL, String email,
+                   int role) {
         this.googleId = googleId;
         this.fullName = fullName;
+        this.displayName = displayName;
         this.givenName = givenName;
         this.familyName = familyName;
         this.imageURL = imageURL;
@@ -55,6 +66,10 @@ public class UserDTO {
 
     public UserDTO() {
         // default constructor
+    }
+
+    public Long getUserId() {
+        return userId;
     }
 
     public String getGoogleId() {
@@ -71,6 +86,14 @@ public class UserDTO {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     public String getGivenName() {
@@ -105,11 +128,11 @@ public class UserDTO {
         this.email = email;
     }
 
-    public String getRole() {
+    public int getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(int role) {
         this.role = role;
     }
 
@@ -118,6 +141,7 @@ public class UserDTO {
         return "UserDTO {" +
                 "\n\tgoogleId='" + googleId + '\'' +
                 ", \n\tfullName='" + fullName + '\'' +
+                ", \n\tdisplayName='" + displayName + '\'' +
                 ", \n\tgivenName='" + givenName + '\'' +
                 ", \n\tfamilyName='" + familyName + '\'' +
                 ", \n\timageURL='" + imageURL + '\'' +

@@ -23,6 +23,11 @@ public class UserPOJO {
     private String fullName;
 
     /**
+     * The user's display name, similar to a username
+     */
+    private String displayName;
+
+    /**
      * The user's given name
      */
     private String givenName;
@@ -57,11 +62,12 @@ public class UserPOJO {
      */
     private String lastUpdated;
 
-    public UserPOJO(Long userId, String googleId, String fullName, String givenName, String familyName, String imageURL, String email,
+    public UserPOJO(Long userId, String googleId, String fullName, String displayName, String givenName, String familyName, String imageURL, String email,
                     int role, String created, String lastUpdated) {
         this.userId = userId;
         this.googleId = googleId;
         this.fullName = fullName;
+        this.displayName = displayName;
         this.givenName = givenName;
         this.familyName = familyName;
         this.imageURL = imageURL;
@@ -93,6 +99,14 @@ public class UserPOJO {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = fullName;
     }
 
     public String getGivenName() {
@@ -157,6 +171,7 @@ public class UserPOJO {
                 "\n\tuserId=" + userId +
                 ",\n\tgoogleId='" + googleId + '\'' +
                 ",\n\tfullName='" + fullName + '\'' +
+                ",\n\tdisplayName='" + displayName + '\'' +
                 ",\n\tgivenName='" + givenName + '\'' +
                 ",\n\tfamilyName='" + familyName + '\'' +
                 ",\n\timageURL='" + imageURL + '\'' +

@@ -27,6 +27,11 @@ public class User {
     private String googleId;
 
     /**
+     * The user's display name, similar to a username
+     */
+    private String displayName;
+
+    /**
      * The user's full name
      */
     private String fullName;
@@ -77,10 +82,11 @@ public class User {
      * @param email
      * @param role
      */
-    public User(String googleId, String fullName, String givenName, String familyName, String imageURL, String email,
+    public User(String googleId, String fullName, String displayName, String givenName, String familyName, String imageURL, String email,
                 int role) {
         this.googleId = googleId;
         this.fullName = fullName;
+        this.displayName = displayName;
         this.givenName = givenName;
         this.familyName = familyName;
         this.imageURL = imageURL;
@@ -97,11 +103,12 @@ public class User {
     public User(UserDTO userDTO) {
         this.googleId = userDTO.getGoogleId();
         this.fullName = userDTO.getFullName();
+        this.displayName = userDTO.getDisplayName();
         this.givenName = userDTO.getGivenName();
         this.familyName = userDTO.getFamilyName();
         this.imageURL = userDTO.getImageURL();
         this.email = userDTO.getEmail();
-        this.role = Integer.parseInt(userDTO.getRole());
+        this.role = userDTO.getRole();
         this.created = new Date();
         this.lastUpdated = new Date();
     }
@@ -132,6 +139,14 @@ public class User {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = fullName;
     }
 
     public String getGivenName() {

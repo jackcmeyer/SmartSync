@@ -6,14 +6,13 @@ package com.smartsync.dto;
  * The update user dto
  */
 public class UpdateUserDTO {
-
     /**
      * The user id for the user.
      */
     private Long userId;
 
     /**
-     * The user's id for their google account
+     * The user id for the user. This is also the id for the user's google account
      */
     private String googleId;
 
@@ -21,6 +20,11 @@ public class UpdateUserDTO {
      * The user's full name
      */
     private String fullName;
+
+    /**
+     * The user's display name, similar to a username
+     */
+    private String displayName;
 
     /**
      * The user's given name
@@ -47,11 +51,11 @@ public class UpdateUserDTO {
      */
     private int role;
 
-    public UpdateUserDTO(Long userId, String googleId, String fullName, String givenName, String familyName,
-                         String imageURL, String email, int role) {
-        this.userId = userId;
+    public UpdateUserDTO(String googleId, String fullName, String displayName, String givenName, String familyName, String imageURL, String email,
+                   int role) {
         this.googleId = googleId;
         this.fullName = fullName;
+        this.displayName = displayName;
         this.givenName = givenName;
         this.familyName = familyName;
         this.imageURL = imageURL;
@@ -60,14 +64,11 @@ public class UpdateUserDTO {
     }
 
     public UpdateUserDTO() {
+        // default constructor
     }
 
     public Long getUserId() {
         return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 
     public String getGoogleId() {
@@ -84,6 +85,14 @@ public class UpdateUserDTO {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     public String getGivenName() {
