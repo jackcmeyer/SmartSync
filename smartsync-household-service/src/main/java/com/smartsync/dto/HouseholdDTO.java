@@ -8,10 +8,14 @@ package com.smartsync.dto;
 public class HouseholdDTO {
 
     /**
+     * The id of the household
+     */
+    private Long householdId;
+
+    /**
      * The nickname of the household
      */
     private String householdName;
-
 
     /**
      * The userId of the owner of the household
@@ -50,8 +54,9 @@ public class HouseholdDTO {
      */
     private int zipCode;
 
-    public HouseholdDTO(String householdName, Long ownerId, String firstAddressLine, String secondAddressLine,
+    public HouseholdDTO(Long householdId, String householdName, Long ownerId, String firstAddressLine, String secondAddressLine,
                         String city, String state, int zipCode) {
+        this.householdId = householdId;
         this.householdName = householdName;
         this.ownerId = ownerId;
         this.firstAddressLine = firstAddressLine;
@@ -63,6 +68,14 @@ public class HouseholdDTO {
 
     public HouseholdDTO() {
         // default constructor
+    }
+
+    public Long getHouseholdId() {
+        return householdId;
+    }
+
+    public void setHouseholdId(Long householdId) {
+        this.householdId = householdId;
     }
 
     public String getHouseholdName() {

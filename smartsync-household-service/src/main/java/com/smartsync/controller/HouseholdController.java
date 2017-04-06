@@ -107,8 +107,9 @@ public class HouseholdController {
     public ResponseEntity addHousehold(@RequestBody HouseholdDTO householdDTO, Errors errors) {
 
         HouseholdValidator validator = new HouseholdValidator();
-        validator.validate(householdDTO, errors);
+        System.out.println(householdDTO.toString());
 
+        validator.validate(householdDTO, errors);
         if(errors.hasErrors()) {
             ValidationError validationError = ValidationErrorBuilder.fromBindErrors(errors);
             String message = "Could not create new household.";

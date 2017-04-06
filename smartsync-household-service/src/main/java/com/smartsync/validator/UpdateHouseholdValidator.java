@@ -1,6 +1,5 @@
 package com.smartsync.validator;
 
-import com.smartsync.dto.HouseholdDTO;
 import com.smartsync.dto.UpdateHouseholdDTO;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;

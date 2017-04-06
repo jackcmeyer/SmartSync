@@ -1,6 +1,6 @@
 package com.smartsync.validator;
 
-import com.smartsync.dto.UpdateHouseholdDTO;
+import com.smartsync.dto.HouseholdDTO;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
@@ -14,7 +14,7 @@ public class HouseholdValidator implements Validator {
 
 
     public boolean supports(Class clazz) {
-        return UpdateHouseholdDTO.class.equals(clazz);
+        return HouseholdDTO.class.equals(clazz);
     }
 
     /**
@@ -23,7 +23,7 @@ public class HouseholdValidator implements Validator {
      * @param errors the errors
      */
     public void validate(Object object, Errors errors) {
-        UpdateHouseholdDTO household = (UpdateHouseholdDTO) object;
+        HouseholdDTO household = (HouseholdDTO) object;
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "householdName", "field.required",
                 "Household name must not be empty");
