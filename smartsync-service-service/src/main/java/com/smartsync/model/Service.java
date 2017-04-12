@@ -28,6 +28,11 @@ public class Service {
     private String name;
 
     /**
+     * The serviceTypeId for the service
+     */
+    private Long serviceTypeId;
+
+    /**
      * The description of the service
      */
     private String description;
@@ -67,9 +72,10 @@ public class Service {
      * @param wide
      * @param tall
      */
-    public Service(Long serviceId, String name, String description, int isActive, int wide, int tall) {
+    public Service(Long serviceId, String name, Long serviceTypeId, String description, int isActive, int wide, int tall) {
         this.serviceId = serviceId;
         this.name = name;
+        this.serviceTypeId = serviceTypeId;
         this.description = description;
         this.isActive = isActive;
         this.wide = wide;
@@ -84,6 +90,7 @@ public class Service {
      */
     public Service(ServiceDTO serviceDTO) {
         this.name = serviceDTO.getName();
+        this.serviceTypeId = serviceDTO.getServiceTypeId();
         this.description = serviceDTO.getDescription();
         this.isActive = serviceDTO.getIsActive();
         this.wide = serviceDTO.getWide();
@@ -100,6 +107,12 @@ public class Service {
     public Long getServiceId() {
         return serviceId;
     }
+
+    public Long getServiceTypeId() {
+        return serviceTypeId;
+    }
+
+    public void setServiceTypeId(Long serviceTypeId) { this.serviceTypeId = serviceTypeId; }
 
     public String getDescription(){ return description;}
 

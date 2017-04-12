@@ -80,11 +80,11 @@ public class ServiceService {
     }
 
     /**
-     * Deletes a user from the database
+     * Deletes a service from the database
      *
      * @param id the id to delete
      *
-     * @return the deleted user
+     * @return the deleted service
      */
     public Service deleteService(Long id) {
         Service deletedService = this.serviceRepository.findByServiceId(id);
@@ -95,18 +95,7 @@ public class ServiceService {
 
         else {
 
-            HouseholdServiceCommunication householdServiceCommunication = new HouseholdServiceCommunication();
-            HouseholdPOJO householdPOJO = householdServiceCommunication.getHouseholdForUserId(id);
-
-            HashMap<String, String> parameters = new HashMap<>();
-            parameters.put("serviceId", Long.toString(id));
-            parameters.put("householdId", Long.toString(householdPOJO.getHouseholdId()));
-
-            householdServiceCommunication.removeUserFromHousehold(parameters);
-
-
             this.serviceRepository.delete(deletedService);
-
 
             return deletedService;
         }

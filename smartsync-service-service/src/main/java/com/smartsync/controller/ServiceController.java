@@ -1,15 +1,14 @@
 package com.smartsync.controller;
 
 import com.smartsync.dto.ServiceDTO;
+import com.smartsync.dto.ServiceTypeDTO;
 import com.smartsync.dto.UpdateServiceDTO;
 import com.smartsync.error.*;
 import com.smartsync.model.Service;
+import com.smartsync.model.ServiceType;
 import com.smartsync.service.ServiceService;
-import com.smartsync.validator.UpdateServiceValidator;
-import com.smartsync.validator.ServiceValidator;
-import com.smartsync.validator.ValidationError;
-import com.smartsync.validator.ValidationErrorBuilder;
-import model.HouseholdPOJO;
+import com.smartsync.service.ServiceTypeService;
+import com.smartsync.validator.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,6 +31,9 @@ public class ServiceController {
     @Autowired
     private ServiceService serviceService;
 
+    @Autowired
+    private ServiceTypeService serviceTypeService;
+
     public ServiceController() {
 
     }
@@ -45,6 +47,14 @@ public class ServiceController {
         return this.serviceService.getAllServices();
     }
 
+    /**
+     * Gets all services.
+     * @return all of the services
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/types", produces = "application/json")
+    public List<ServiceType> getAllServiceTypes() {
+        return this.serviceTypeService.getAllServiceTypes();
+    }
     /**
      * Gets service by id
      *
@@ -73,16 +83,109 @@ public class ServiceController {
 
 
     /**
-     * Adds a new user to the database
+     * Gets serviceType by id
+     *
+     * @param id gets the serviceType by id
+     *
+     * @return the serviceType
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/types/{id}", produces = "application/json")
+    public ResponseEntity getServiceTypeById(@PathVariable("id") Long id) {
+
+        logger.info("Getting service type information for id: " + id);
+
+        ServiceType serviceType = this.serviceTypeService.getServiceTypeById(id);
+
+        if(serviceType == null) {
+
+            String message = "Could not find service type with id " + id + ".";
+            String url = "/service/types/" + id;
+            logger.error(message);
+            throw new ServiceTypeNotFoundException(message, url);
+        }
+
+        logger.info("Successfully got service type information: " + serviceType);
+        return ResponseEntity.ok(serviceType);
+    }
+
+    /**
+     * Gets service by id
+     *
+     * @param id gets the service type by id
+     *
+     * @return the service
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/{id}/types", produces = "application/json")
+    public ResponseEntity getServiceTypeByServiceId(@PathVariable("id") Long id) {
+
+        logger.info("Getting service type information for id: " + id);
+
+        Service service = this.serviceService.getServiceById(id);
+
+        if(service == null) {
+
+            String message = "Could not find service with id " + id + ".";
+            String url = "/service/" + id + "/types";
+            logger.error(message);
+            throw new ServiceNotFoundException(message, url);
+        }
+
+        ServiceType serviceType = this.serviceTypeService.getServiceTypeById(service.getServiceTypeId());
+
+        if(serviceType == null){
+            String message = "Could not find service type with id " + service.getServiceTypeId() + ".";
+            String url = "/service/" + id + "/types";
+            logger.error(message);
+            throw new ServiceTypeNotFoundException(message, url);
+        }
+
+        logger.info("Successfully got service information: " + serviceType);
+        return ResponseEntity.ok(serviceType);
+    }
+
+
+    /**
+     * Adds a new service type to the database
+     *
+     * @param serviceTypeDTO the user dto to add
+     * @param errors the errors list
+     *
+     * @return the service that was added
+     */
+    @RequestMapping(method = RequestMethod.POST, value = "/types", produces = "application/json")
+    public ResponseEntity addServiceType(@RequestBody ServiceTypeDTO serviceTypeDTO, Errors errors) {
+        logger.info("Adding new service type: " + serviceTypeDTO);
+
+        ServiceTypeValidator serviceTypeValidator = new ServiceTypeValidator();
+        serviceTypeValidator.validate(serviceTypeDTO, errors);
+
+        ValidationError validationError = ValidationErrorBuilder.fromBindErrors(errors);
+
+
+        if(errors.hasErrors()) {
+
+            logger.error("Service type could not be created: " + validationError.getErrors());
+            throw new IllegalRequestFormatException("Could not add service type.", "/service/type/", validationError);
+        }
+
+        ServiceType serviceType = new ServiceType(serviceTypeDTO);
+        ServiceType savedServiceType = this.serviceTypeService.addServiceType(serviceType);
+        logger.info("Successfully created new service type: " + savedServiceType);
+
+        return ResponseEntity.ok(savedServiceType);
+    }
+
+
+    /**
+     * Adds a new service to the database
      *
      * @param serviceDTO the user dto to add
      * @param errors the errors list
      *
-     * @return the user that was addded
+     * @return the service that was added
      */
     @RequestMapping(method = RequestMethod.POST, value = "/", produces = "application/json")
     public ResponseEntity addService(@RequestBody ServiceDTO serviceDTO, Errors errors) {
-        //TODO fix this to add a new service to a given householdId
         logger.info("Adding new service: " + serviceDTO);
 
         ServiceValidator serviceValidator = new ServiceValidator();
@@ -95,6 +198,18 @@ public class ServiceController {
 
             logger.error("Service could not be created: " + validationError.getErrors());
             throw new IllegalRequestFormatException("Could not add service.", "/users/", validationError);
+        }
+
+        logger.info("Getting service type information for id: " + serviceDTO.getServiceTypeId());
+
+        ServiceType serviceType = this.serviceTypeService.getServiceTypeById(serviceDTO.getServiceTypeId());
+
+        if(serviceType == null) {
+
+            String message = "Could not find service type with id " + serviceDTO.getServiceTypeId() + ".";
+            String url = "/service/types/" + serviceDTO.getServiceTypeId();
+            logger.error(message);
+            throw new ServiceTypeNotFoundException(message, url);
         }
 
         Service service = new Service(serviceDTO);
@@ -128,9 +243,9 @@ public class ServiceController {
     }
 
     /**
-     * Deletes a user by id
-     * @param id the user id
-     * @return the user that was deleted
+     * Deletes a service by id
+     * @param id the service id
+     * @return the service that was deleted
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}", produces = "application/json")
     public ResponseEntity deleteService(@PathVariable("id") Long id) {
@@ -165,13 +280,13 @@ public class ServiceController {
 
 
     /**
-     * Handles the household not found exception
-     * @param e the household not found exception
+     * Handles the serviceType not found exception
+     * @param e the serviceType not found exception
      * @return the response entity with the error
      */
-    @ExceptionHandler(value = ServiceNotFoundException.class)
-    public ResponseEntity handleHouseholdNotFoundException(ServiceNotFoundException e) {
-        ErrorInfo error = new ErrorInfo("Household Not Found", e.getMessage(), e.getUrl());
+    @ExceptionHandler(value = ServiceTypeNotFoundException.class)
+    public ResponseEntity handleServiceTypeNotFoundException(ServiceTypeNotFoundException e) {
+        ErrorInfo error = new ErrorInfo("ServiceType Not Found", e.getMessage(), e.getUrl());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }

@@ -15,6 +15,11 @@ public class ServiceDTO {
     private Long serviceId;
 
     /**
+     * The serviceTypeId for the service
+     */
+    private Long serviceTypeId;
+
+    /**
      * The service's name
      */
     private String name;
@@ -57,7 +62,8 @@ public class ServiceDTO {
      * @param wide
      * @param tall
      */
-    public ServiceDTO(String name, String description, int isActive, int wide, int tall) {
+    public ServiceDTO(Long serviceTypeId, String name, String description, int isActive, int wide, int tall) {
+        this.serviceTypeId = serviceTypeId;
         this.name = name;
         this.description = description;
         this.isActive = isActive;
@@ -72,6 +78,12 @@ public class ServiceDTO {
     public Long getServiceId() {
         return serviceId;
     }
+
+    public Long getServiceTypeId() {
+        return serviceTypeId;
+    }
+
+    public void setServiceTypeId(Long serviceTypeId) { this.serviceTypeId = serviceTypeId; }
 
     public String getDescription(){ return description;}
 

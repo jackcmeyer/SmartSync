@@ -15,6 +15,11 @@ public class UpdateServiceDTO {
     private Long serviceId;
 
     /**
+     * The serviceTypeId for the service
+     */
+    private Long serviceTypeId;
+
+    /**
      * The service's name
      */
     private String name;
@@ -57,7 +62,8 @@ public class UpdateServiceDTO {
      * @param wide
      * @param tall
      */
-    public UpdateServiceDTO(String name, String description, int isActive, int wide, int tall) {
+    public UpdateServiceDTO(Long serviceTypeId, String name, String description, int isActive, int wide, int tall) {
+        this.serviceTypeId = serviceTypeId;
         this.name = name;
         this.description = description;
         this.isActive = isActive;
@@ -73,6 +79,12 @@ public class UpdateServiceDTO {
         return serviceId;
     }
 
+    public Long getServiceTypeId() {
+        return serviceTypeId;
+    }
+
+    public void setServiceTypeId(Long serviceTypeId) { this.serviceTypeId = serviceTypeId; }
+    
     public String getDescription(){ return description;}
 
     public void setDescription(String description){ this.description = description;}
