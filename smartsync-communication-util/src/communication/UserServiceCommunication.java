@@ -109,4 +109,21 @@ public class UserServiceCommunication {
         return user;
     }
 
+    /**
+     * Get a user by their google id
+     * @param googleId the google id of the user
+     * @return user POJO object
+     */
+    public UserPOJO getUserByGoogleId(String googleId) {
+        try {
+            String json = HttpUtil.executeGetRequest(USER_BASE_URL + "/google/"
+                    + googleId);
+            return jsonToUser(json);
+
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }
