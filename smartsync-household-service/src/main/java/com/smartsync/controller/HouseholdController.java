@@ -15,6 +15,7 @@ import com.smartsync.validator.*;
 import communication.ServiceServiceCommunication;
 import communication.UserServiceCommunication;
 import model.ServicePOJO;
+import communication.AuthServiceCommunication;
 import model.UserPOJO;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,7 @@ public class HouseholdController {
 
     private UserServiceCommunication userServiceCommunication = new UserServiceCommunication();
     private ServiceServiceCommunication serviceServiceCommunication = new ServiceServiceCommunication();
+    private AuthServiceCommunication authServiceCommunication = new AuthServiceCommunication();
 
 
     @Autowired
