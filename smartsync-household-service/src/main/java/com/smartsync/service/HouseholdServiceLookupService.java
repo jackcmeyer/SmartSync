@@ -25,7 +25,7 @@ public class HouseholdServiceLookupService {
 
     /**
      * Adds a user to the household
-     * @param userId the user id to add
+     * @param serviceId add service id to add
      * @param householdId the household to add the user to
      * @return the household user look up
      */
@@ -43,7 +43,7 @@ public class HouseholdServiceLookupService {
      * @param id the household id
      * @return a list of users a part of the household
      */
-    public List<ServicePOJO> getHouseholdServices(Long id) {
+    public List<ServicePOJO> getHouseholdServices(Long id, String sessionId) {
         List<HouseholdServiceLookup> householdServiceLookups =
                 this.householdServiceLookupRepository.findByHouseholdId(id);
 
@@ -51,7 +51,7 @@ public class HouseholdServiceLookupService {
         List<ServicePOJO> services = new ArrayList<>();
         for(HouseholdServiceLookup householdServiceLookup : householdServiceLookups) {
             ServiceServiceCommunication serviceServiceCommunication = new ServiceServiceCommunication();
-            services.add(serviceServiceCommunication.getService(householdServiceLookup.getServiceId()));
+            services.add(serviceServiceCommunication.getService(householdServiceLookup.getServiceId(), sessionId));
         }
 
         return services;

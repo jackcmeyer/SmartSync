@@ -12,6 +12,7 @@ import com.smartsync.service.HouseholdService;
 import com.smartsync.service.HouseholdServiceLookupService;
 import com.smartsync.service.HouseholdUserLookupService;
 import com.smartsync.validator.*;
+import communication.AuthServiceCommunication;
 import communication.ServiceServiceCommunication;
 import communication.UserServiceCommunication;
 import model.ServicePOJO;
@@ -41,7 +42,7 @@ public class HouseholdController {
 
     private UserServiceCommunication userServiceCommunication = new UserServiceCommunication();
     private ServiceServiceCommunication serviceServiceCommunication = new ServiceServiceCommunication();
-
+    private AuthServiceCommunication authServiceCommunication = new AuthServiceCommunication();
 
     @Autowired
     private HouseholdUserLookupService householdUserLookupService;
@@ -59,10 +60,17 @@ public class HouseholdController {
      * @return all of the households in the database
      */
     @RequestMapping(method = RequestMethod.GET, value = "/", produces = "application/json")
-    public ResponseEntity getAllHouseholds() {
+    public ResponseEntity getAllHouseholds(@RequestHeader("sessionId") String sessionId) {
+
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User unauthenticated", "households/");
+        }
 
         List<Household> householdList = new ArrayList<>();
         householdList = this.householdService.getAllHouseholds();
+
 
         logger.info("Successfully got all households: " + householdList);
         return ResponseEntity.ok(householdList);
@@ -76,7 +84,14 @@ public class HouseholdController {
      * @return the household
      */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}", produces = "application/json")
-    public ResponseEntity getHouseHoldById(@PathVariable("id") Long id) {
+    public ResponseEntity getHouseHoldById(@PathVariable("id") Long id,
+                                           @RequestHeader("sessionId") String sessionId) {
+
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User unauthenticated", "households/");
+        }
 
         logger.info("Getting household information for id: " + id);
 
@@ -104,7 +119,14 @@ public class HouseholdController {
      * @return the household that was added
      */
     @RequestMapping(method = RequestMethod.POST, value = "/", produces = "application/json")
-    public ResponseEntity addHousehold(@RequestBody HouseholdDTO householdDTO, Errors errors) {
+    public ResponseEntity addHousehold(@RequestBody HouseholdDTO householdDTO, Errors errors,
+                                       @RequestHeader("sessionId") String sessionId) {
+
+        if (authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User unauthenticated", "households/");
+        }
 
         HouseholdValidator validator = new HouseholdValidator();
         System.out.println(householdDTO.toString());
@@ -120,7 +142,7 @@ public class HouseholdController {
         }
 
         UserServiceCommunication userServiceCommunication = new UserServiceCommunication();
-        UserPOJO user = userServiceCommunication.getUser(householdDTO.getOwnerId());
+        UserPOJO user = userServiceCommunication.getUser(householdDTO.getOwnerId(),sessionId);
 
         if(user == null) {
             String message = "Could not create new household because owner with id: " + householdDTO.getOwnerId() +
@@ -147,7 +169,15 @@ public class HouseholdController {
      * @return the household id
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}", produces = "application/json")
-    public ResponseEntity deleteHousehold(@PathVariable("id") Long id) {
+    public ResponseEntity deleteHousehold(@PathVariable("id") Long id,
+                                          @RequestHeader("sessionId") String sessionId) {
+
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User unauthenticated", "households/");
+        }
+
         Household h = this.householdService.deleteHousehold(id);
 
         if(h == null) {
@@ -168,7 +198,14 @@ public class HouseholdController {
      * @return list of users in the household
      */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}/users", produces = "application/json")
-    public ResponseEntity getUsersInHousehold(@PathVariable("id") Long id) {
+    public ResponseEntity getUsersInHousehold(@PathVariable("id") Long id,
+                                              @RequestHeader("sessionId") String sessionId) {
+
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User unauthenticated", "households/");
+        }
 
         Household household = this.householdService.getHouseHoldById(id);
         if(household == null) {
@@ -180,7 +217,7 @@ public class HouseholdController {
         }
 
 
-        List<UserPOJO> users = this.householdUserLookupService.getUsersInHousehold(id);
+        List<UserPOJO> users = this.householdUserLookupService.getUsersInHousehold(id, sessionId);
 
         logger.info("Successfully found users in household with id " + id + "\n" + users);
         return ResponseEntity.ok(users);
@@ -193,7 +230,14 @@ public class HouseholdController {
      * @return list of users in the household
      */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}/services", produces = "application/json")
-    public ResponseEntity getHouseholdServices(@PathVariable("id") Long id) {
+    public ResponseEntity getHouseholdServices(@PathVariable("id") Long id,
+                                               @RequestHeader("sessionId") String sessionId) {
+
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User unauthenticated", "households/");
+        }
 
         Household household = this.householdService.getHouseHoldById(id);
         if(household == null) {
@@ -205,7 +249,7 @@ public class HouseholdController {
         }
 
 
-        List<ServicePOJO> services = this.householdServiceLookupService.getHouseholdServices(id);
+        List<ServicePOJO> services = this.householdServiceLookupService.getHouseholdServices(id, sessionId);
 
         logger.info("Successfully found services in household with id " + id + "\n" + services);
         return ResponseEntity.ok(services);
@@ -220,7 +264,15 @@ public class HouseholdController {
      * @return success
      */
     @RequestMapping(method = RequestMethod.POST, value = "/services", produces = "application/json")
-    public ResponseEntity addServiceToHousehold(@RequestBody ServiceAndHouseholdDTO serviceAndHouseholdDTO, Errors errors) {
+    public ResponseEntity addServiceToHousehold(@RequestBody ServiceAndHouseholdDTO serviceAndHouseholdDTO,
+                                                Errors errors,
+                                                @RequestHeader("sessionId") String sessionId) {
+
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User unauthenticated", "households/");
+        }
 
         ServiceAndHouseholdValidator serviceAndHouseholdValidator = new ServiceAndHouseholdValidator();
         serviceAndHouseholdValidator.validate(serviceAndHouseholdDTO, errors);
@@ -239,7 +291,7 @@ public class HouseholdController {
         Long id = serviceAndHouseholdDTO.getHouseholdId();
 
         // check if the user exists
-        ServicePOJO service = serviceServiceCommunication.getService(serviceId);
+        ServicePOJO service = serviceServiceCommunication.getService(serviceId, sessionId);
         if(service == null) {
             String message = "Could not find service with id " + serviceId + ".";
             String url = "/households/service/";
@@ -280,9 +332,17 @@ public class HouseholdController {
      * @return the response entity with the UserHouseHoldLookUp that was removed
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "{id}/services/{serviceId}", produces = "application/json")
-    public ResponseEntity removeServiceFromHousehold(@PathVariable("id") Long id, @PathVariable("serviceId") Long serviceId) {
+    public ResponseEntity removeServiceFromHousehold(@PathVariable("id") Long id,
+                                                     @PathVariable("serviceId") Long serviceId,
+                                                     @RequestHeader("sessionId") String sessionId) {
 
-        ServicePOJO servicePOJO = this.serviceServiceCommunication.getService(serviceId);
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User unauthenticated", "households/");
+        }
+
+        ServicePOJO servicePOJO = this.serviceServiceCommunication.getService(serviceId,sessionId);
         // if the user does not exist
         if(servicePOJO == null) {
             String message = "Could not remove service with id: " + serviceId + " because the service" +
@@ -329,7 +389,13 @@ public class HouseholdController {
      * @return success
      */
     @RequestMapping(method = RequestMethod.POST, value = "/users", produces = "application/json")
-    public ResponseEntity addUserToHousehold(@RequestBody UserAndHouseholdDTO userAndHouseholdDTO, Errors errors) {
+    public ResponseEntity addUserToHousehold(@RequestBody UserAndHouseholdDTO userAndHouseholdDTO, Errors errors,
+                                             @RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User unauthenticated", "households/");
+        }
 
         UserAndHouseholdValidator userAndHouseholdValidator = new UserAndHouseholdValidator();
         userAndHouseholdValidator.validate(userAndHouseholdDTO, errors);
@@ -348,7 +414,7 @@ public class HouseholdController {
         Long id = userAndHouseholdDTO.getHouseholdId();
 
         // check if the user exists
-        UserPOJO user = userServiceCommunication.getUser(userId);
+        UserPOJO user = userServiceCommunication.getUser(userId, sessionId);
         if(user == null) {
             String message = "Could not find user with id " + userId + ".";
             String url = "/households/users/";
@@ -400,9 +466,15 @@ public class HouseholdController {
      * @return the response entity with the UserHouseHoldLookUp that was removed
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "{id}/users/{userId}", produces = "application/json")
-    public ResponseEntity removeUserFromHousehold(@PathVariable("id") Long id, @PathVariable("userId") Long userId) {
+    public ResponseEntity removeUserFromHousehold(@PathVariable("id") Long id, @PathVariable("userId") Long userId,
+                                                  @RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
 
-        UserPOJO userPOJO = this.userServiceCommunication.getUser(userId);
+        } else {
+            throw new UserNotFoundException("User unauthenticated", "households/");
+        }
+
+        UserPOJO userPOJO = this.userServiceCommunication.getUser(userId,sessionId);
         // if the user does not exist
         if(userPOJO == null) {
             String message = "Could not remove user with id: " + userId + " because the user" +
@@ -447,9 +519,16 @@ public class HouseholdController {
      * @return the household the user is a part of
      */
     @RequestMapping(method = RequestMethod.GET, value = "/users/{userId}", produces = "application/json")
-    public ResponseEntity getHouseholdForUser(@PathVariable("userId") Long userId) {
+    public ResponseEntity getHouseholdForUser(@PathVariable("userId") Long userId,
+                                              @RequestHeader("sessionId") String sessionId) {
 
-        UserPOJO user = userServiceCommunication.getUser(userId);
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User unauthenticated", "households/");
+        }
+
+        UserPOJO user = userServiceCommunication.getUser(userId, sessionId);
         if(user == null) {
             String message = "Could not find user with id " + userId + ".";
             String url = "/households/users/" + userId;
@@ -483,7 +562,14 @@ public class HouseholdController {
      * @return the udpated user
      */
     @RequestMapping(method = RequestMethod.PUT, value = "/", produces = "application/json")
-    public ResponseEntity updateHousehold(@RequestBody UpdateHouseholdDTO updateHouseholdDTO, Errors errors) {
+    public ResponseEntity updateHousehold(@RequestBody UpdateHouseholdDTO updateHouseholdDTO, Errors errors,
+                                          @RequestHeader("sessionId") String sessionId) {
+
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User unauthenticated", "households/");
+        }
 
         UpdateHouseholdValidator houseValidator = new UpdateHouseholdValidator();
         houseValidator.validate(updateHouseholdDTO, errors);
