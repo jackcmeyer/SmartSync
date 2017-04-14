@@ -207,7 +207,7 @@ public class HouseholdController {
 
         List<ServicePOJO> services = this.householdServiceLookupService.getHouseholdServices(id);
 
-        logger.info("Successfully found users in household with id " + id + "\n" + services);
+        logger.info("Successfully found services in household with id " + id + "\n" + services);
         return ResponseEntity.ok(services);
 
     }

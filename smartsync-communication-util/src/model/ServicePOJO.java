@@ -15,6 +15,11 @@ public class ServicePOJO {
     private Long serviceId;
 
     /**
+     * The serviceTypeId for the service
+     */
+    private Long serviceTypeId;
+
+    /**
      * The service's name
      */
     private String name;
@@ -59,8 +64,9 @@ public class ServicePOJO {
      * @param wide
      * @param tall
      */
-    public ServicePOJO(Long serviceId, String name, String description, int isActive, int wide, int tall, String created, String lastUpdated) {
+    public ServicePOJO(Long serviceId, Long serviceTypeId, String name, String description, int isActive, int wide, int tall, String created, String lastUpdated) {
         this.serviceId = serviceId;
+        this.serviceTypeId = serviceTypeId;
         this.name = name;
         this.description = description;
         this.isActive = isActive;
@@ -77,6 +83,12 @@ public class ServicePOJO {
     public Long getServiceId() {
         return serviceId;
     }
+
+    public Long getServiceTypeId() {
+        return serviceTypeId;
+    }
+
+    public void setServiceTypeId(Long serviceTypeId) { this.serviceTypeId = serviceTypeId; }
 
     public String getDescription(){ return description;}
 
