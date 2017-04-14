@@ -15,16 +15,18 @@ import java.net.URLConnection;
  */
 public class HttpUtil {
 
-    public static String executeGetRequest(String targetURL) throws Exception {
+    public static String executeGetRequest(String targetURL, String sessionId) throws Exception {
 
         // create connection
         URL url = new URL(targetURL);
         URLConnection urlConnection = url.openConnection();
+        urlConnection.addRequestProperty("sessionId", sessionId);
 
         // get response
         BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
         String line;
         StringBuilder response = new StringBuilder();
+
         while ((line = reader.readLine()) != null) {
             response.append(line);
         }
@@ -34,7 +36,7 @@ public class HttpUtil {
         return response.toString();
     }
 
-    public static String executePostRequest(String targetURL, String parameterString) throws Exception {
+    public static String executePostRequest(String targetURL, String parameterString, String sessionId) throws Exception {
 
         // create connection
         URL url = new URL(targetURL);
@@ -42,7 +44,7 @@ public class HttpUtil {
         connection.setRequestMethod("POST");
         connection.setDoOutput(true);
         connection.setRequestProperty("Content-Type", "application/json");
-
+        connection.addRequestProperty("sessionId", sessionId);
         // write parameter string
         DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
         outputStream.writeBytes(parameterString);
@@ -68,13 +70,14 @@ public class HttpUtil {
      * @param parameterString the parameter string
      * @return the json string
      */
-    public static String executeDeleteRequestWithBody(String targetURL, String parameterString) throws IOException {
+    public static String executeDeleteRequestWithBody(String targetURL, String parameterString, String sessionId) throws IOException {
         // create connection
         URL url = new URL(targetURL);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("DELETE");
         connection.setDoOutput(true);
         connection.setRequestProperty("Content-Type", "application/json");
+        connection.addRequestProperty("sessionId", sessionId);
 
         // write parameter string
         DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
@@ -95,12 +98,13 @@ public class HttpUtil {
         return response.toString();
     }
 
-    public static String executeDeleteRequest(String targetURL) throws Exception {
+    public static String executeDeleteRequest(String targetURL, String sessionId) throws Exception {
         // create connection
         URL url = new URL(targetURL);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("DELETE");
         connection.setDoOutput(true);
+        connection.addRequestProperty("sessionId", sessionId);
 
         // get response
         BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));

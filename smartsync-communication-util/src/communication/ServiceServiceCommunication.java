@@ -20,9 +20,9 @@ public class ServiceServiceCommunication {
     /**
      * Gets all users
      */
-    public List<ServicePOJO> getAllServices() {
+    public List<ServicePOJO> getAllServices(String sessionId) {
         try {
-            String json = HttpUtil.executeGetRequest(SERVICE_BASE_URL);
+            String json = HttpUtil.executeGetRequest(SERVICE_BASE_URL, sessionId);
 
             Gson gson = new Gson();
             Type typeList = new TypeToken<ArrayList<ServicePOJO>>(){}.getType();
@@ -40,10 +40,10 @@ public class ServiceServiceCommunication {
      *
      * @param id the id to find by
      */
-    public ServicePOJO getService(Long id) {
+    public ServicePOJO getService(Long id, String sessionId) {
 
         try {
-            String json = HttpUtil.executeGetRequest(SERVICE_BASE_URL + id);
+            String json = HttpUtil.executeGetRequest(SERVICE_BASE_URL + id, sessionId);
             return jsonToService(json);
         } catch (Exception e) {
             e.printStackTrace();
@@ -56,7 +56,8 @@ public class ServiceServiceCommunication {
      *
      * @param parameters a hashmap which holds the parameters
      */
-    public ServicePOJO addService(HashMap<String, String> parameters) {
+
+    public ServicePOJO addService(HashMap<String, String> parameters, String sessionId) {
 
         // create request parameter string
         Iterator iterator = parameters.entrySet().iterator();
@@ -72,7 +73,7 @@ public class ServiceServiceCommunication {
         requestBody = requestBody + "}";
 
         try {
-           String json = HttpUtil.executePostRequest(SERVICE_BASE_URL, requestBody);
+           String json = HttpUtil.executePostRequest(SERVICE_BASE_URL, requestBody, sessionId);
            return jsonToService(json);
         } catch (Exception e) {
             e.printStackTrace();
@@ -85,10 +86,10 @@ public class ServiceServiceCommunication {
      *
      * @param id the id to delete by
      */
-    public ServicePOJO deleteService(Long id) {
+    public ServicePOJO deleteService(Long id, String sessionId) {
 
         try {
-            String json = HttpUtil.executeDeleteRequest(SERVICE_BASE_URL + id);
+            String json = HttpUtil.executeDeleteRequest(SERVICE_BASE_URL + id, sessionId);
             return jsonToService(json);
 
         } catch(Exception e) {

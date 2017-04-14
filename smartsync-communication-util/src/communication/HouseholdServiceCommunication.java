@@ -27,9 +27,9 @@ public class HouseholdServiceCommunication {
     /**
      * Gets all households
      */
-    public List<HouseholdPOJO> getAllHouseholds() {
+    public List<HouseholdPOJO> getAllHouseholds(String sessionId) {
         try {
-            String json = HttpUtil.executeGetRequest(HOUSEHOLD_BASE_URL);
+            String json = HttpUtil.executeGetRequest(HOUSEHOLD_BASE_URL, sessionId);
             Gson gson = new Gson();
             Type typeList = new TypeToken<ArrayList<HouseholdPOJO>>(){}.getType();
             List<HouseholdPOJO> householdList = gson.fromJson(json, typeList);
@@ -44,9 +44,9 @@ public class HouseholdServiceCommunication {
      * Gets household by id
      * @param id the id to find by
      */
-    public HouseholdPOJO getHouseholdByHouseholdId(Long id) {
+    public HouseholdPOJO getHouseholdByHouseholdId(Long id, String sessionId) {
         try {
-            String json = HttpUtil.executeGetRequest(HOUSEHOLD_BASE_URL + id);
+            String json = HttpUtil.executeGetRequest(HOUSEHOLD_BASE_URL + id,sessionId);
             return jsonToHousehold(json);
         } catch (Exception e) {
             e.printStackTrace();
@@ -59,9 +59,9 @@ public class HouseholdServiceCommunication {
      * @param userId
      * @return
      */
-    public HouseholdPOJO getHouseholdForUserId(Long userId) {
+    public HouseholdPOJO getHouseholdForUserId(Long userId, String sessionId) {
         try {
-            String json = HttpUtil.executeGetRequest(HOUSEHOLD_BASE_URL + "users/" + userId);
+            String json = HttpUtil.executeGetRequest(HOUSEHOLD_BASE_URL + "users/" + userId, sessionId);
             return jsonToHousehold(json);
         } catch (Exception e) {
             e.printStackTrace();
@@ -75,7 +75,7 @@ public class HouseholdServiceCommunication {
      *
      * @param parameters the parameters in the form of a hashmap
      */
-    public HouseholdPOJO addHousehold(HashMap<String, String> parameters) {
+    public HouseholdPOJO addHousehold(HashMap<String, String> parameters, String sessionId) {
         // create request parameter string
         Iterator iterator = parameters.entrySet().iterator();
         StringBuilder builder = new StringBuilder();
@@ -91,7 +91,7 @@ public class HouseholdServiceCommunication {
         requestBody = requestBody + "}";
 
         try {
-            String json = HttpUtil.executePostRequest(HOUSEHOLD_BASE_URL, requestBody);
+            String json = HttpUtil.executePostRequest(HOUSEHOLD_BASE_URL, requestBody, sessionId);
             return jsonToHousehold(json);
         } catch (Exception e) {
             e.printStackTrace();
@@ -104,9 +104,9 @@ public class HouseholdServiceCommunication {
      *
      * @param id the id to delete
      */
-    public HouseholdPOJO deleteHousehold(Long id) {
+    public HouseholdPOJO deleteHousehold(Long id, String sessionId) {
         try {
-            String json = HttpUtil.executeDeleteRequest(HOUSEHOLD_BASE_URL + id);
+            String json = HttpUtil.executeDeleteRequest(HOUSEHOLD_BASE_URL + id, sessionId);
             return jsonToHousehold(json);
         } catch (Exception e) {
             e.printStackTrace();
@@ -119,7 +119,7 @@ public class HouseholdServiceCommunication {
      * @param parameters
      * @return
      */
-    public HouseholdUserLookUpPOJO addUserToHousehold(HashMap<String, String> parameters) {
+    public HouseholdUserLookUpPOJO addUserToHousehold(HashMap<String, String> parameters, String sessionId) {
         // create request parameter string
         Iterator iterator = parameters.entrySet().iterator();
         StringBuilder builder = new StringBuilder();
@@ -133,7 +133,7 @@ public class HouseholdServiceCommunication {
         requestBody = requestBody + "}";
 
         try {
-            String json = HttpUtil.executePostRequest(HOUSEHOLD_BASE_URL + "users", requestBody);
+            String json = HttpUtil.executePostRequest(HOUSEHOLD_BASE_URL + "users", requestBody,sessionId);
             return jsonToHouseholdUserLookup(json);
         } catch (Exception e) {
             e.printStackTrace();
@@ -146,7 +146,7 @@ public class HouseholdServiceCommunication {
      * @param parameters the parameter hashmap
      * @return the household user lookup pojo
      */
-    public HouseholdUserLookUpPOJO removeUserFromHousehold(HashMap<String, String> parameters) {
+    public HouseholdUserLookUpPOJO removeUserFromHousehold(HashMap<String, String> parameters, String sessionId) {
 
         // create request parameter string
         Iterator iterator = parameters.entrySet().iterator();
@@ -161,7 +161,7 @@ public class HouseholdServiceCommunication {
         requestBody = requestBody + "}";
 
         try {
-            String json = HttpUtil.executeDeleteRequestWithBody(HOUSEHOLD_BASE_URL + "users", requestBody);
+            String json = HttpUtil.executeDeleteRequestWithBody(HOUSEHOLD_BASE_URL + "users", requestBody,sessionId);
             return jsonToHouseholdUserLookup(json);
         } catch (IOException e) {
             e.printStackTrace();
@@ -176,7 +176,7 @@ public class HouseholdServiceCommunication {
      * @param parameters
      * @return
      */
-    public HouseholdServiceLookUpPOJO addServiceToHousehold(HashMap<String, String> parameters) {
+    public HouseholdServiceLookUpPOJO addServiceToHousehold(HashMap<String, String> parameters, String sessionId) {
         // create request parameter string
         Iterator iterator = parameters.entrySet().iterator();
         StringBuilder builder = new StringBuilder();
@@ -190,7 +190,7 @@ public class HouseholdServiceCommunication {
         requestBody = requestBody + "}";
 
         try {
-            String json = HttpUtil.executePostRequest(HOUSEHOLD_BASE_URL + "services", requestBody);
+            String json = HttpUtil.executePostRequest(HOUSEHOLD_BASE_URL + "services", requestBody, sessionId);
             return jsonToHouseholdServiceLookup(json);
         } catch (Exception e) {
             e.printStackTrace();
@@ -203,7 +203,7 @@ public class HouseholdServiceCommunication {
      * @param parameters the parameter hashmap
      * @return the household service lookup pojo
      */
-    public HouseholdServiceLookUpPOJO removeServiceFromHousehold(HashMap<String, String> parameters) {
+    public HouseholdServiceLookUpPOJO removeServiceFromHousehold(HashMap<String, String> parameters, String sessionId) {
 
         // create request parameter string
         Iterator iterator = parameters.entrySet().iterator();
@@ -218,7 +218,8 @@ public class HouseholdServiceCommunication {
         requestBody = requestBody + "}";
 
         try {
-            String json = HttpUtil.executeDeleteRequestWithBody(HOUSEHOLD_BASE_URL + "services", requestBody);
+            String json = HttpUtil.executeDeleteRequestWithBody(HOUSEHOLD_BASE_URL + "services", requestBody,
+                    sessionId);
             return jsonToHouseholdServiceLookup(json);
         } catch (IOException e) {
             e.printStackTrace();

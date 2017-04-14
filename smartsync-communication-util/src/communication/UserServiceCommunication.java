@@ -20,9 +20,9 @@ public class UserServiceCommunication {
     /**
      * Gets all users
      */
-    public List<UserPOJO> getAllUsers() {
+    public List<UserPOJO> getAllUsers(String sessionId) {
         try {
-            String json = HttpUtil.executeGetRequest(USER_BASE_URL);
+            String json = HttpUtil.executeGetRequest(USER_BASE_URL, sessionId);
 
             Gson gson = new Gson();
             Type typeList = new TypeToken<ArrayList<UserPOJO>>(){}.getType();
@@ -40,10 +40,10 @@ public class UserServiceCommunication {
      *
      * @param id the id to find by
      */
-    public UserPOJO getUser(Long id) {
+    public UserPOJO getUser(Long id, String sessionId) {
 
         try {
-            String json = HttpUtil.executeGetRequest(USER_BASE_URL + id);
+            String json = HttpUtil.executeGetRequest(USER_BASE_URL + id,sessionId);
             return jsonToUser(json);
         } catch (Exception e) {
             e.printStackTrace();
@@ -56,7 +56,7 @@ public class UserServiceCommunication {
      *
      * @param parameters a hashmap which holds the parameters
      */
-    public UserPOJO addUser(HashMap<String, String> parameters) {
+    public UserPOJO addUser(HashMap<String, String> parameters, String sessionId) {
 
         // create request parameter string
         Iterator iterator = parameters.entrySet().iterator();
@@ -72,7 +72,7 @@ public class UserServiceCommunication {
         requestBody = requestBody + "}";
 
         try {
-           String json = HttpUtil.executePostRequest(USER_BASE_URL, requestBody);
+           String json = HttpUtil.executePostRequest(USER_BASE_URL, requestBody, sessionId);
            return jsonToUser(json);
         } catch (Exception e) {
             e.printStackTrace();
@@ -85,10 +85,22 @@ public class UserServiceCommunication {
      *
      * @param id the id to delete by
      */
-    public UserPOJO deleteUser(Long id) {
+    public UserPOJO deleteUser(Long id, String sessionId) {
 
         try {
-            String json = HttpUtil.executeDeleteRequest(USER_BASE_URL + id);
+            String json = HttpUtil.executeDeleteRequest(USER_BASE_URL + id, sessionId);
+            return jsonToUser(json);
+
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public UserPOJO getUserByGoogleId(String googleId) {
+        try {
+            String json = HttpUtil.executeGetRequest(USER_BASE_URL + "/google/"
+                    + googleId, googleId);
             return jsonToUser(json);
 
         } catch(Exception e) {
