@@ -11,6 +11,7 @@ import com.smartsync.validator.HouseholdTodoListValidator;
 import com.smartsync.validator.TodoListValidator;
 import com.smartsync.validator.ValidationError;
 import com.smartsync.validator.ValidationErrorBuilder;
+import communication.AuthServiceCommunication;
 import communication.HouseholdServiceCommunication;
 import communication.UserServiceCommunication;
 import model.HouseholdPOJO;
@@ -34,6 +35,7 @@ public class TodoListController {
     @Autowired
     private TodoListService todoListService;
 
+    private AuthServiceCommunication authServiceCommunication = new AuthServiceCommunication();
     public TodoListController() {
 
     }
@@ -43,7 +45,12 @@ public class TodoListController {
      * @return the response entity with the to do list
      */
     @RequestMapping(method = RequestMethod.GET, value = "/", produces = "application/json")
-    public ResponseEntity getAllTodoLists() {
+    public ResponseEntity getAllTodoLists(@RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/todoList/");
+        }
         List<ITodoList> todoLists = this.todoListService.getAll();
 
         return ResponseEntity.ok(todoLists);
@@ -54,7 +61,13 @@ public class TodoListController {
      * @return response entity with the individual to do lists
      */
     @RequestMapping(method = RequestMethod.GET, value = "/individual", produces = "application/json")
-    public ResponseEntity getAllIndividualTodoLists() {
+    public ResponseEntity getAllIndividualTodoLists(@RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/todolist/");
+
+        }
         List<TodoList> todoLists = this.todoListService.getAllIndividualTodoLists();
 
         return ResponseEntity.ok(todoLists);
@@ -65,7 +78,13 @@ public class TodoListController {
      * @return response entity with the household to do lists
      */
     @RequestMapping(method = RequestMethod.GET, value = "/household", produces = "application/json")
-    public ResponseEntity getAllHouseholdTodoLists() {
+    public ResponseEntity getAllHouseholdTodoLists(@RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/todolist/");
+        }
+
         List<HouseholdTodoList> householdTodoLists = this.todoListService.getAllHouseholdTodoLists();
 
         return ResponseEntity.ok(householdTodoLists);
@@ -77,7 +96,13 @@ public class TodoListController {
      * @return the response entity with individual
      */
     @RequestMapping(method = RequestMethod.GET, value = "/individual/{id}", produces = "application/json")
-    public ResponseEntity getIndividualTodoListById(@PathVariable("id") Long id) {
+    public ResponseEntity getIndividualTodoListById(@PathVariable("id") Long id,
+                                                    @RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/todolist/individual/" + id);
+        }
         TodoList todoList = this.todoListService.getIndividualTodoListById(id);
 
         // check if the to do list exists
@@ -97,7 +122,13 @@ public class TodoListController {
      * @return the response entity with the household to do list
      */
     @RequestMapping(method = RequestMethod.GET, value = "/household/{id}", produces = "application/json")
-    public ResponseEntity getHouseholdTodoListById(@PathVariable("id") Long id) {
+    public ResponseEntity getHouseholdTodoListById(@PathVariable("id") Long id,
+                                                   @RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/todolist/household/" + id);
+        }
         HouseholdTodoList householdTodoList = this.todoListService.getHouseholdTodoListById(id);
 
         // check if the to do list exists
@@ -117,7 +148,14 @@ public class TodoListController {
      * @return the response entity with the new to do list
      */
     @RequestMapping(method = RequestMethod.POST, value = "/individual", produces = "application/json")
-    public ResponseEntity addIndividualTodoList(@RequestBody TodoListDTO todoListDTO, Errors errors) {
+    public ResponseEntity addIndividualTodoList(@RequestBody TodoListDTO todoListDTO, Errors errors,
+                                                @RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/todolist/individual");
+
+        }
 
         // check for validation errors
         TodoListValidator todoListValidator = new TodoListValidator();
@@ -133,7 +171,7 @@ public class TodoListController {
 
         // check if the user for the to do list exists
         UserServiceCommunication userServiceCommunication = new UserServiceCommunication();
-        UserPOJO userPOJO = userServiceCommunication.getUser(todoListDTO.getUserId());
+        UserPOJO userPOJO = userServiceCommunication.getUser(todoListDTO.getUserId(), sessionId);
         if(userPOJO == null) {
             String message = "Could not find user with id " + todoListDTO.getUserId();
             String url = "todolist/individual";
@@ -151,7 +189,14 @@ public class TodoListController {
      * @return response entity with the new household to do list
      */
     @RequestMapping(method = RequestMethod.POST, value = "/household", produces = "application/json")
-    public ResponseEntity addHouseholdTodoList(@RequestBody HouseholdTodoListDTO householdTodoListDTO, Errors errors) {
+    public ResponseEntity addHouseholdTodoList(@RequestBody HouseholdTodoListDTO householdTodoListDTO, Errors errors,
+                                               @RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/todolist/household");
+        }
+
 
         // check for validation errors
         HouseholdTodoListValidator householdTodoListValidator = new HouseholdTodoListValidator();
@@ -167,7 +212,8 @@ public class TodoListController {
         // check if the household exists
         HouseholdServiceCommunication householdServiceCommunication = new HouseholdServiceCommunication();
         HouseholdPOJO householdPOJO =
-                householdServiceCommunication.getHouseholdByHouseholdId(householdTodoListDTO.getHouseholdId());
+                householdServiceCommunication.getHouseholdByHouseholdId(householdTodoListDTO.getHouseholdId(),
+                        sessionId);
         if(householdPOJO == null) {
             String message = "Could not find household with id " + householdTodoListDTO.getHouseholdId();
             String url = "/todolist/household";
@@ -186,7 +232,13 @@ public class TodoListController {
      * @return the response entity with individual
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "/individual/{id}", produces = "application/json")
-    public ResponseEntity deleteIndividualTodoListById(@PathVariable("id") Long id) {
+    public ResponseEntity deleteIndividualTodoListById(@PathVariable("id") Long id,
+                                                       @RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/todolist/individual/" + id);
+        }
 
         // check for if the to do list exists
         TodoList todoList = this.todoListService.getIndividualTodoListById(id);
@@ -208,7 +260,13 @@ public class TodoListController {
      * @return the response entity with the household to do list
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "/household/{id}", produces = "application/json")
-    public ResponseEntity deleteHouseholdTodoListById(@PathVariable("id") Long id) {
+    public ResponseEntity deleteHouseholdTodoListById(@PathVariable("id") Long id,
+                                                      @RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/todolist/household/" +id);
+        }
 
         // check for if the to do list exists
         HouseholdTodoList todoList = this.todoListService.getHouseholdTodoListById(id);
@@ -230,11 +288,18 @@ public class TodoListController {
      * @return the response entity with the to do lists
      */
     @RequestMapping(method = RequestMethod.GET, value = "/users/{userId}", produces = "application/json")
-    public ResponseEntity getAllTodoListsForUser(@PathVariable("userId") Long userId) {
+    public ResponseEntity getAllTodoListsForUser(@PathVariable("userId") Long userId,
+                                                 @RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/todolist/individual");
+
+        }
 
         // check if the user for the to do list exists
         UserServiceCommunication userServiceCommunication = new UserServiceCommunication();
-        UserPOJO userPOJO = userServiceCommunication.getUser(userId);
+        UserPOJO userPOJO = userServiceCommunication.getUser(userId, sessionId);
         if(userPOJO == null) {
             String message = "Could not find user with id " + userId;
             String url = "todolist/individual";
@@ -253,11 +318,17 @@ public class TodoListController {
      * @return the response entity with the to do lists
      */
     @RequestMapping(method = RequestMethod.GET, value = "/individual/users/{userId}", produces = "application/json")
-    public ResponseEntity getAllIndividualTodoListsForUser(@PathVariable("userId") Long userId) {
+    public ResponseEntity getAllIndividualTodoListsForUser(@PathVariable("userId") Long userId,
+                                                           @RequestHeader("sessionId") String sessionId) {
 
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/todolist/individual");
+        }
         // check if the user for the to do list exists
         UserServiceCommunication userServiceCommunication = new UserServiceCommunication();
-        UserPOJO userPOJO = userServiceCommunication.getUser(userId);
+        UserPOJO userPOJO = userServiceCommunication.getUser(userId, sessionId);
         if(userPOJO == null) {
             String message = "Could not find user with id " + userId;
             String url = "todolist/individual";
@@ -276,12 +347,18 @@ public class TodoListController {
      * @return the response entity with the household
      */
     @RequestMapping(method = RequestMethod.GET, value = "/household/{householdId}", produces = "application/json")
-    public ResponseEntity getAllHouseholdTodoListsForHousehold(@PathVariable("householdId") Long householdId) {
+    public ResponseEntity getAllHouseholdTodoListsForHousehold(@PathVariable("householdId") Long householdId,
+                                                               @RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/todolist/household");
+        }
 
         // check if the household exists
         HouseholdServiceCommunication householdServiceCommunication = new HouseholdServiceCommunication();
         HouseholdPOJO householdPOJO =
-                householdServiceCommunication.getHouseholdByHouseholdId(householdId);
+                householdServiceCommunication.getHouseholdByHouseholdId(householdId,sessionId);
         if(householdPOJO == null) {
             String message = "Could not find household with id " + householdId;
             String url = "/todolist/household";

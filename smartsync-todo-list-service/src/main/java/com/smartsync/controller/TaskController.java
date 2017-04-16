@@ -13,6 +13,7 @@ import com.smartsync.validator.TodoTaskValidator;
 import com.smartsync.validator.UpdateTaskValidator;
 import com.smartsync.validator.ValidationError;
 import com.smartsync.validator.ValidationErrorBuilder;
+import communication.AuthServiceCommunication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,8 @@ public class TaskController {
     @Autowired
     private TodoListService todoListService;
 
+    private AuthServiceCommunication authServiceCommunication = new AuthServiceCommunication();
+
     public TaskController() {
 
     }
@@ -42,7 +45,12 @@ public class TaskController {
      * @return response entity with the list of tasks
      */
     @RequestMapping(method = RequestMethod.GET, value = "/tasks", produces = "application/json")
-    public ResponseEntity getAllTasks() {
+    public ResponseEntity getAllTasks(@RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/todolist/tasks");
+        }
 
         return ResponseEntity.ok(this.todoTaskService.getAllTasks());
     }
@@ -52,7 +60,13 @@ public class TaskController {
      * @return response entity with the list of tasks
      */
     @RequestMapping(method = RequestMethod.GET, value = "/tasks/individual", produces = "application/json")
-    public ResponseEntity getAllIndividualTasks() {
+    public ResponseEntity getAllIndividualTasks(@RequestHeader("sessionId") String sessionId) {
+
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/todolist/tasks/individual");
+        }
 
         return ResponseEntity.ok(this.todoTaskService.getAllIndividualTasks());
     }
@@ -62,7 +76,12 @@ public class TaskController {
      * @return respones entity with the list of tasks
      */
     @RequestMapping(method = RequestMethod.GET, value = "/tasks/household", produces = "application/json")
-    public ResponseEntity getAllHouseholdTasks() {
+    public ResponseEntity getAllHouseholdTasks(@RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/todolist/tasks/household");
+        }
 
         return ResponseEntity.ok(this.todoTaskService.getAllHouseholdTasks());
     }
@@ -73,7 +92,13 @@ public class TaskController {
      * @return response entity with the task
      */
     @RequestMapping(method = RequestMethod.GET, value = "/tasks/individual/{id}", produces = "application/json")
-    public ResponseEntity getIndividualTaskById(@PathVariable("id") Long id) {
+    public ResponseEntity getIndividualTaskById(@PathVariable("id") Long id,
+                                                @RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/todolist/tasks/individual/" + id);
+        }
 
         TodoTask todoTask = this.todoTaskService.getIndividualTaskById(id);
 
@@ -94,7 +119,14 @@ public class TaskController {
      * @return response entity the household task
      */
     @RequestMapping(method = RequestMethod.GET, value = "/tasks/household/{id}", produces = "application/json")
-    public ResponseEntity getHouseholdTaskById(@PathVariable("id") Long id) {
+    public ResponseEntity getHouseholdTaskById(@PathVariable("id") Long id,
+                                               @RequestHeader("sessionId") String sessionId) {
+
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/todolist/tasks/household/" + id);
+        }
 
         HouseholdTodoTask householdTodoTask = this.todoTaskService.getHouseholdTaskById(id);
 
@@ -115,7 +147,13 @@ public class TaskController {
      * @return the response entity with the new task
      */
     @RequestMapping(method = RequestMethod.POST, value = "/tasks/individual", produces = "application/json")
-    public ResponseEntity addIndividualTask(@RequestBody TodoTaskDTO todoTaskDTO, Errors errors) {
+    public ResponseEntity addIndividualTask(@RequestBody TodoTaskDTO todoTaskDTO, Errors errors,
+                                            @RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/todolist/tasks/individual");
+        }
 
         TodoTaskValidator todoTaskValidator = new TodoTaskValidator();
         todoTaskValidator.validate(todoTaskDTO, errors);
@@ -150,7 +188,13 @@ public class TaskController {
      * @return the response entity with the new task
      */
     @RequestMapping(method = RequestMethod.POST, value = "/tasks/household", produces = "application/json")
-    public ResponseEntity addHouseholdTask(@RequestBody TodoTaskDTO todoTaskDTO, Errors errors) {
+    public ResponseEntity addHouseholdTask(@RequestBody TodoTaskDTO todoTaskDTO, Errors errors,
+                                           @RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/todolist/tasks/household");
+        }
 
         TodoTaskValidator todoTaskValidator = new TodoTaskValidator();
         todoTaskValidator.validate(todoTaskDTO, errors);
@@ -184,7 +228,13 @@ public class TaskController {
      * @return response entity with the updated task
      */
     @RequestMapping(method = RequestMethod.PUT, value = "/tasks/individual", produces = "application/json")
-    public ResponseEntity updateIndividualTask(@RequestBody UpdateTaskDTO updateTaskDTO, Errors errors) {
+    public ResponseEntity updateIndividualTask(@RequestBody UpdateTaskDTO updateTaskDTO, Errors errors,
+                                               @RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/todolist/tasks/individual");
+        }
 
         UpdateTaskValidator updateTaskValidator = new UpdateTaskValidator();
         updateTaskValidator.validate(updateTaskDTO, errors);
@@ -218,7 +268,14 @@ public class TaskController {
      * @return response entity with the updated task
      */
     @RequestMapping(method = RequestMethod.PUT, value = "/tasks/household", produces = "application/json")
-    public ResponseEntity updateHouseholdTask(@RequestBody UpdateTaskDTO updateTaskDTO, Errors errors) {
+    public ResponseEntity updateHouseholdTask(@RequestBody UpdateTaskDTO updateTaskDTO, Errors errors,
+                                              @RequestHeader("sessionId") String sessionId) {
+
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/todolist/tasks/individual");
+        }
 
         UpdateTaskValidator updateTaskValidator = new UpdateTaskValidator();
         updateTaskValidator.validate(updateTaskDTO, errors);
@@ -252,7 +309,13 @@ public class TaskController {
      * @return response entity with the deleted task
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "/tasks/individual/{id}", produces = "application/json")
-    public ResponseEntity deleteIndividualTask(@PathVariable("id") Long id) {
+    public ResponseEntity deleteIndividualTask(@PathVariable("id") Long id,
+                                               @RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/todolist/tasks/individual" + id);
+        }
 
         // check if the to do list was found
         TodoTask todoTask = this.todoTaskService.getIndividualTaskById(id);
@@ -273,7 +336,13 @@ public class TaskController {
      * @return response entity with the deleted task
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "/tasks/household/{id}", produces = "application/json")
-    public ResponseEntity deleteHouseholdTask(@PathVariable("id") Long id) {
+    public ResponseEntity deleteHouseholdTask(@PathVariable("id") Long id,
+                                              @RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "todolist/tasks/individual/" + id);
+        }
 
         // check if the task was found
         HouseholdTodoTask householdTodoTask = this.todoTaskService.getHouseholdTaskById(id);
