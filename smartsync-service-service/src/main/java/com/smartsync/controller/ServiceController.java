@@ -9,6 +9,7 @@ import com.smartsync.model.ServiceType;
 import com.smartsync.service.ServiceService;
 import com.smartsync.service.ServiceTypeService;
 import com.smartsync.validator.*;
+import communication.AuthServiceCommunication;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,8 @@ public class ServiceController {
     @Autowired
     private ServiceTypeService serviceTypeService;
 
+    private AuthServiceCommunication authServiceCommunication = new AuthServiceCommunication();
+
     public ServiceController() {
 
     }
@@ -43,7 +46,12 @@ public class ServiceController {
      * @return all of the services
      */
     @RequestMapping(method = RequestMethod.GET, value = "/", produces = "application/json")
-    public List<Service> getAllServices() {
+    public List<Service> getAllServices(@RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new ServiceNotFoundException("User not authenticated", "service/");
+        }
         return this.serviceService.getAllServices();
     }
 
@@ -52,7 +60,13 @@ public class ServiceController {
      * @return all of the services
      */
     @RequestMapping(method = RequestMethod.GET, value = "/types", produces = "application/json")
-    public List<ServiceType> getAllServiceTypes() {
+    public List<ServiceType> getAllServiceTypes(@RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new ServiceNotFoundException("User not authenticated", "service/");
+        }
+
         return this.serviceTypeService.getAllServiceTypes();
     }
     /**
@@ -63,7 +77,13 @@ public class ServiceController {
      * @return the service
      */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}", produces = "application/json")
-    public ResponseEntity getServiceById(@PathVariable("id") Long id) {
+    public ResponseEntity getServiceById(@PathVariable("id") Long id,
+                                         @RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new ServiceNotFoundException("User not authenticated", "service/" + id);
+        }
 
         logger.info("Getting service information for id: " + id);
 
@@ -90,7 +110,14 @@ public class ServiceController {
      * @return the serviceType
      */
     @RequestMapping(method = RequestMethod.GET, value = "/types/{id}", produces = "application/json")
-    public ResponseEntity getServiceTypeById(@PathVariable("id") Long id) {
+    public ResponseEntity getServiceTypeById(@PathVariable("id") Long id,
+                                             @RequestHeader("sessionId") String sessionId) {
+
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new ServiceNotFoundException("User not authenticated", "/service/types/" + id);
+        }
 
         logger.info("Getting service type information for id: " + id);
 
@@ -116,7 +143,13 @@ public class ServiceController {
      * @return the service
      */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}/types", produces = "application/json")
-    public ResponseEntity getServiceTypeByServiceId(@PathVariable("id") Long id) {
+    public ResponseEntity getServiceTypeByServiceId(@PathVariable("id") Long id,
+                                                    @RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new ServiceNotFoundException("User not authenticated", "/service/" + id + "/types");
+        }
 
         logger.info("Getting service type information for id: " + id);
 
@@ -153,7 +186,14 @@ public class ServiceController {
      * @return the service that was added
      */
     @RequestMapping(method = RequestMethod.POST, value = "/types", produces = "application/json")
-    public ResponseEntity addServiceType(@RequestBody ServiceTypeDTO serviceTypeDTO, Errors errors) {
+    public ResponseEntity addServiceType(@RequestBody ServiceTypeDTO serviceTypeDTO, Errors errors,
+                                         @RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new ServiceNotFoundException("User not authenticated", "/service/type");
+        }
+
         logger.info("Adding new service type: " + serviceTypeDTO);
 
         ServiceTypeValidator serviceTypeValidator = new ServiceTypeValidator();
@@ -185,7 +225,14 @@ public class ServiceController {
      * @return the service that was added
      */
     @RequestMapping(method = RequestMethod.POST, value = "/", produces = "application/json")
-    public ResponseEntity addService(@RequestBody ServiceDTO serviceDTO, Errors errors) {
+    public ResponseEntity addService(@RequestBody ServiceDTO serviceDTO, Errors errors,
+                                     @RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new ServiceNotFoundException("User not authenticated", "/service/types/" +
+                    serviceDTO.getServiceTypeId());
+        }
         logger.info("Adding new service: " + serviceDTO);
 
         ServiceValidator serviceValidator = new ServiceValidator();
@@ -226,7 +273,13 @@ public class ServiceController {
      * @return the udpated user
      */
     @RequestMapping(method = RequestMethod.PUT, value = "/", produces = "application/json")
-    public ResponseEntity updateService(@RequestBody UpdateServiceDTO updateServiceDTO, Errors errors) {
+    public ResponseEntity updateService(@RequestBody UpdateServiceDTO updateServiceDTO, Errors errors,
+                                        @RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new ServiceNotFoundException("User not authenticated", "/service");
+        }
 
         UpdateServiceValidator userValidator = new UpdateServiceValidator();
         userValidator.validate(updateServiceDTO, errors);
@@ -248,7 +301,13 @@ public class ServiceController {
      * @return the service that was deleted
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}", produces = "application/json")
-    public ResponseEntity deleteService(@PathVariable("id") Long id) {
+    public ResponseEntity deleteService(@PathVariable("id") Long id,
+                                        @RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new ServiceNotFoundException("User not authenticated", "/service/" + id);
+        }
 
         Service service = this.serviceService.deleteService(id);
 
