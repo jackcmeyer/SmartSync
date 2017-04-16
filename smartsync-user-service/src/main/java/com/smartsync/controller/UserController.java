@@ -9,6 +9,7 @@ import com.smartsync.validator.UpdateUserValidator;
 import com.smartsync.validator.UserValidator;
 import com.smartsync.validator.ValidationError;
 import com.smartsync.validator.ValidationErrorBuilder;
+import communication.AuthServiceCommunication;
 import model.HouseholdPOJO;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,8 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    private AuthServiceCommunication authServiceCommunication = new AuthServiceCommunication();
+
     public UserController() {
 
     }
@@ -41,7 +44,14 @@ public class UserController {
      * @return all of the users
      */
     @RequestMapping(method = RequestMethod.GET, value = "/", produces = "application/json")
-    public List<User> getAllUsers() {
+    public List<User> getAllUsers(@RequestHeader("sessionId") String sessionId) {
+
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/users");
+        }
+
         return this.userService.getAllUsers();
     }
 
@@ -53,8 +63,13 @@ public class UserController {
      * @return the user
      */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}", produces = "application/json")
-    public ResponseEntity getUserById(@PathVariable("id") Long id) {
+    public ResponseEntity getUserById(@PathVariable("id") Long id, @RequestHeader("sessionId") String sessionId) {
 
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/users/" + id);
+        }
         logger.info("Getting user information for id: " + id);
 
         User user = this.userService.getUserById(id);
@@ -79,7 +94,8 @@ public class UserController {
      */
     @RequestMapping(method = RequestMethod.GET, value = "/email/{email}/", produces = "application/json")
     public ResponseEntity getUserByEmail(@PathVariable("email") String email) {
-        
+
+
         User user = this.userService.getUserByEmail(email);
 
         if(user == null) {
@@ -105,7 +121,14 @@ public class UserController {
      * @return the user that was addded
      */
     @RequestMapping(method = RequestMethod.POST, value = "/", produces = "application/json")
-    public ResponseEntity addUser(@RequestBody UserDTO userDTO, Errors errors) {
+    public ResponseEntity addUser(@RequestBody UserDTO userDTO, Errors errors,
+                                  @RequestHeader("sessionId") String sessionId) {
+
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/users");
+        }
 
         logger.info("Adding new user: " + userDTO);
 
@@ -155,7 +178,14 @@ public class UserController {
      * @return the udpated user
      */
     @RequestMapping(method = RequestMethod.PUT, value = "/", produces = "application/json")
-    public ResponseEntity updateUser(@RequestBody UpdateUserDTO updateUserDTO, Errors errors) {
+    public ResponseEntity updateUser(@RequestBody UpdateUserDTO updateUserDTO, Errors errors,
+                                     @RequestHeader("sessionId") String sessionId) {
+
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/users");
+        }
 
         UpdateUserValidator userValidator = new UpdateUserValidator();
         userValidator.validate(updateUserDTO, errors);
@@ -177,7 +207,13 @@ public class UserController {
      * @return the user that was deleted
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}", produces = "application/json")
-    public ResponseEntity deleteUser(@PathVariable("id") Long id) {
+    public ResponseEntity deleteUser(@PathVariable("id") Long id, @RequestHeader("sessionId") String sessionId) {
+
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/users/" + id);
+        }
 
         User user = this.userService.deleteUser(id);
 
@@ -200,7 +236,14 @@ public class UserController {
      * @return the household which the uesr is a part of
      */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}/household", produces = "application/json")
-    public ResponseEntity getHouseholdForUser(@PathVariable("id") Long id) {
+    public ResponseEntity getHouseholdForUser(@PathVariable("id") Long id,
+                                              @RequestHeader("sessionId") String sessionId) {
+
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/users/" + id + "/households");
+        }
 
         User user = this.userService.getUserById(id);
 
