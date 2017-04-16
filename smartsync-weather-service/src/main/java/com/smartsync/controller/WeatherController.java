@@ -10,6 +10,7 @@ import com.smartsync.validator.ValidationError;
 import com.smartsync.validator.ValidationErrorBuilder;
 import com.smartsync.validator.WeatherValidator;
 import communication.UserServiceCommunication;
+import communication.AuthServiceCommunication;
 import model.UserPOJO;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,7 @@ public class WeatherController {
     @Autowired
     private WeatherInformationService weatherInformationService;
 
+    private AuthServiceCommunication authServiceCommunication = new AuthServiceCommunication();
     /**
      * Gets all weather location in the database
      * @return the list of all weather location
@@ -49,7 +51,7 @@ public class WeatherController {
 
     /**
      * Gets all weather information in the database
-     * @return the list of all weather information
+     * @return the list of all weather informationn
      */
     @RequestMapping(method = RequestMethod.GET, value = "/information", produces = "application/json")
     public ResponseEntity getAllWeatherInformation() {
@@ -64,8 +66,14 @@ public class WeatherController {
      * @returnt the saved weather information
      */
     @RequestMapping(method = RequestMethod.POST, value = "/", produces = "application/json")
-    public ResponseEntity addWeather(@RequestBody WeatherLocationDTO weatherLocationDTO, Errors errors) {
+    public ResponseEntity addWeather(@RequestBody WeatherLocationDTO weatherLocationDTO, Errors errors,
+                                     @RequestHeader("sessionId") String sessionId) {
 
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/weather/");
+        }
 
         WeatherValidator validator = new WeatherValidator();
         validator.validate(weatherLocationDTO, errors);
@@ -83,7 +91,7 @@ public class WeatherController {
 
         // make sure the use exists
         UserServiceCommunication userServiceCommunication = new UserServiceCommunication();
-        UserPOJO user = userServiceCommunication.getUser(weatherLocationDTO.getUserId());
+        UserPOJO user = userServiceCommunication.getUser(weatherLocationDTO.getUserId(), sessionId);
         if(user == null) {
             String message = "Could not find user with id " + weatherLocationDTO.getUserId();
             String url = "weather/";
@@ -104,7 +112,15 @@ public class WeatherController {
      * @return the weather location
      */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}/location", produces = "application/json")
-    public ResponseEntity getWeatherLocationById(@PathVariable("id") Long id) {
+    public ResponseEntity getWeatherLocationById(@PathVariable("id") Long id,
+                                                 @RequestHeader("sessionId") String sessionId) {
+
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/" + id);
+        }
+
         WeatherLocation weatherLocation = this.weatherService.getWeatherLocationById(id);
 
         if(weatherLocation == null) {
@@ -124,7 +140,14 @@ public class WeatherController {
      * @return the weather information
      */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}/information", produces = "application/json")
-    public ResponseEntity getWeatherInformationByid(@PathVariable("id") Long id) {
+    public ResponseEntity getWeatherInformationByid(@PathVariable("id") Long id,
+                                                    @RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/" + id);
+
+        }
         WeatherInformation weatherInformation = this.weatherInformationService.getWeatherInformationById(id);
 
         if(weatherInformation == null) {
@@ -144,7 +167,13 @@ public class WeatherController {
      * @return the deleted weather location
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}", produces = "application/json")
-    public ResponseEntity deleteWeatherById(@PathVariable("id") Long id) {
+    public ResponseEntity deleteWeatherById(@PathVariable("id") Long id,
+                                            @RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/" + id);
+        }
         WeatherLocation weatherLocation = this.weatherService.deleteWeatherLocationById(id);
         WeatherInformation weatherInformation = this.weatherInformationService.deleteWeatherInformationById(id);
 
@@ -159,16 +188,24 @@ public class WeatherController {
         return ResponseEntity.ok(weatherLocation);
     }
 
+
     /**
      * Gets weather location for a user
      * @param userId the user id to find by
      * @return the list of weather locations for a user
      */
     @RequestMapping(method = RequestMethod.GET, value = "/users/{userId}/location", produces = "application/json")
-    public ResponseEntity getWeatherLocationsForUser(@PathVariable("userId") Long userId) {
+    public ResponseEntity getWeatherLocationsForUser(@PathVariable("userId") Long userId,
+                                                     @RequestHeader("sessionId") String sessionId) {
+
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "weather/");
+        }
 
         UserServiceCommunication userServiceCommunication = new UserServiceCommunication();
-        UserPOJO user = userServiceCommunication.getUser(userId);
+        UserPOJO user = userServiceCommunication.getUser(userId, sessionId);
 
         if(user == null) {
             String message = "Could not find user with id " + userId;
@@ -191,10 +228,17 @@ public class WeatherController {
      * @return the list of weather information for a user
      */
     @RequestMapping(method = RequestMethod.GET, value = "/users/{userId}/information", produces = "application/json")
-    public ResponseEntity getWeatherInformationForUser(@PathVariable("userId") Long userId) {
+    public ResponseEntity getWeatherInformationForUser(@PathVariable("userId") Long userId,
+                                                       @RequestHeader("sessionId") String sessionId) {
+
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "weather/");
+        }
 
         UserServiceCommunication userServiceCommunication = new UserServiceCommunication();
-        UserPOJO user = userServiceCommunication.getUser(userId);
+        UserPOJO user = userServiceCommunication.getUser(userId, sessionId);
 
         if(user == null) {
             String message = "Could not find user with id " + userId;
@@ -217,10 +261,16 @@ public class WeatherController {
      * @return the list of deleted weather for a user
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "users/{userId}", produces = "application/json")
-    public ResponseEntity deleteAllWeatherForUser(@PathVariable("userId") Long userId) {
+    public ResponseEntity deleteAllWeatherForUser(@PathVariable("userId") Long userId,
+                                                  @RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "weather/");
+        }
 
         UserServiceCommunication userServiceCommunication = new UserServiceCommunication();
-        UserPOJO user = userServiceCommunication.getUser(userId);
+        UserPOJO user = userServiceCommunication.getUser(userId, sessionId);
 
         if(user == null) {
             String message = "Could not find user with id " + userId;
