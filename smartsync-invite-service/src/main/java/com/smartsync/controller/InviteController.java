@@ -7,6 +7,7 @@ import com.smartsync.service.InviteService;
 import com.smartsync.validator.InviteValidator;
 import com.smartsync.validator.ValidationError;
 import com.smartsync.validator.ValidationErrorBuilder;
+import communication.AuthServiceCommunication;
 import communication.HouseholdServiceCommunication;
 import communication.UserServiceCommunication;
 import model.HouseholdPOJO;
@@ -34,6 +35,8 @@ public class InviteController {
     @Autowired
     private InviteService inviteService;
 
+    private AuthServiceCommunication authServiceCommunication = new AuthServiceCommunication();
+
     public InviteController() {
 
     }
@@ -43,7 +46,12 @@ public class InviteController {
      * @return the response entity with all of the invites
      */
     @RequestMapping(method = RequestMethod.GET, value = "/", produces = "application/json")
-    public ResponseEntity getAllInvites() {
+    public ResponseEntity getAllInvites(@RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/invites");
+        }
         return ResponseEntity.ok(this.inviteService.getAllInvites());
     }
 
@@ -53,7 +61,14 @@ public class InviteController {
      * @return the invite
      */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}", produces = "application/json")
-    public ResponseEntity getInvite(@PathVariable(value = "id") Long id) {
+    public ResponseEntity getInvite(@PathVariable(value = "id") Long id,
+                                    @RequestHeader("sessionId") String sessionId) {
+
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/invites/" + id);
+        }
 
         Invite invite = this.inviteService.getInvite(id);
 
@@ -76,7 +91,15 @@ public class InviteController {
      * @return the invite that was accepted
      */
     @RequestMapping(method = RequestMethod.POST, value = "/{id}/accept", produces = "application/json")
-    public ResponseEntity acceptInvite(@PathVariable(value = "id") Long id) {
+    public ResponseEntity acceptInvite(@PathVariable(value = "id") Long id,
+                                       @RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/invites/" + id);
+
+        }
+
         Invite invite = this.inviteService.getInvite(id);
 
         if(invite == null) {
@@ -99,8 +122,14 @@ public class InviteController {
      * @return the invite that was created
      */
     @RequestMapping(method = RequestMethod.POST, value = "/", produces = "application/json")
-    public ResponseEntity addInvite(@RequestBody InviteDTO inviteDTO, Errors errors) {
+    public ResponseEntity addInvite(@RequestBody InviteDTO inviteDTO, Errors errors,
+                                    @RequestHeader("sessionId") String sessionId) {
 
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/invites/");
+        }
         InviteValidator inviteValidator = new InviteValidator();
         inviteValidator.validate(inviteDTO, errors);
 
@@ -116,7 +145,7 @@ public class InviteController {
 
         // check if the uesr exists
         UserServiceCommunication userServiceCommunication = new UserServiceCommunication();
-        UserPOJO userPOJO = userServiceCommunication.getUser(inviteDTO.getUserId());
+        UserPOJO userPOJO = userServiceCommunication.getUser(inviteDTO.getUserId(), sessionId);
         if(userPOJO == null) {
             String message = "Could not find user with id: " + inviteDTO.getUserId();
             String url = "/invites/";
@@ -127,7 +156,8 @@ public class InviteController {
 
         // check if the household exists
         HouseholdServiceCommunication householdServiceCommunication = new HouseholdServiceCommunication();
-        HouseholdPOJO householdPOJO = householdServiceCommunication.getHouseholdByHouseholdId(inviteDTO.getHouseholdId());
+        HouseholdPOJO householdPOJO = householdServiceCommunication.getHouseholdByHouseholdId(inviteDTO.getHouseholdId(),
+                sessionId);
         if(householdPOJO == null) {
             String message = "Could not find household with id: " + inviteDTO.getHouseholdId();
             String url = "/invites/";
@@ -147,7 +177,15 @@ public class InviteController {
      * @return the deleted invite
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}", produces = "application/json")
-    public ResponseEntity deleteInvite(@PathVariable("id") Long id) {
+    public ResponseEntity deleteInvite(@PathVariable("id") Long id, @RequestHeader("sessionId") String sessionId) {
+
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/invites/" + id);
+
+        }
+
         Invite invite = this.inviteService.deleteInvite(id);
 
         if(invite == null) {
@@ -168,10 +206,16 @@ public class InviteController {
      * @return the response entity with all of the invites for user
      */
     @RequestMapping(method = RequestMethod.GET, value = "/users/{userId}", produces = "application/json")
-    public ResponseEntity getAllInvitesForUser(@PathVariable("userId") Long userId) {
+    public ResponseEntity getAllInvitesForUser(@PathVariable("userId") Long userId,
+                                               @RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/invites/users/" + userId);
+        }
 
         UserServiceCommunication userServiceCommunication = new UserServiceCommunication();
-        UserPOJO userPOJO = userServiceCommunication.getUser(userId);
+        UserPOJO userPOJO = userServiceCommunication.getUser(userId, sessionId);
         if(userPOJO == null) {
             String message = "Could not find user with id: " + userId;
             String url = "/invites/users/" + userId;
@@ -192,13 +236,19 @@ public class InviteController {
      * @return the response entity with all of the invites for household
      */
     @RequestMapping(method = RequestMethod.GET, value = "/households/{householdId}", produces = "application/json")
-    public ResponseEntity getAllInvitesForHousehold(@PathVariable("householdId") Long householdId) {
+    public ResponseEntity getAllInvitesForHousehold(@PathVariable("householdId") Long householdId,
+                                                    @RequestHeader("sessionId") String sessionId) {
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/invites/households/" + householdId);
+        }
 
         HouseholdServiceCommunication householdServiceCommunication = new HouseholdServiceCommunication();
-        HouseholdPOJO householdPOJO = householdServiceCommunication.getHouseholdByHouseholdId(householdId);
+        HouseholdPOJO householdPOJO = householdServiceCommunication.getHouseholdByHouseholdId(householdId, sessionId);
         if(householdPOJO == null) {
             String message = "Could not find household with id: " + householdId;
-            String url = "/invites/households" + householdId;
+            String url = "/invites/households/" + householdId;
 
             logger.error(message);
             throw new HouseholdNotFoundException(message, url);
@@ -216,10 +266,17 @@ public class InviteController {
      * @return the response entity with all of the deleted invites
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "/users/{userId}", produces = "application/json")
-    public ResponseEntity deleteAllInvitesForUser(@PathVariable("userId") Long userId) {
+    public ResponseEntity deleteAllInvitesForUser(@PathVariable("userId") Long userId,
+                                                  @RequestHeader("sessionId") String sessionId) {
+
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/invites/users/" + userId);
+        }
 
         UserServiceCommunication userServiceCommunication = new UserServiceCommunication();
-        UserPOJO userPOJO = userServiceCommunication.getUser(userId);
+        UserPOJO userPOJO = userServiceCommunication.getUser(userId, sessionId);
         if(userPOJO == null) {
             String message = "Could not find user with id: " + userId;
             String url = "/invites/users/" + userId;
@@ -240,10 +297,16 @@ public class InviteController {
      * @return the response entity with all of the deleted invites
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "/households/{householdId}", produces = "application/json")
-    public ResponseEntity deleteAllInvitesForHousehold(@PathVariable("householdId") Long householdId) {
+    public ResponseEntity deleteAllInvitesForHousehold(@PathVariable("householdId") Long householdId,
+                                                       @RequestHeader("sessionId") String sessionId) {
 
+        if(authServiceCommunication.authenticateUser(sessionId)) {
+
+        } else {
+            throw new UserNotFoundException("User not authenticated", "/invites/households/" + householdId);
+        }
         HouseholdServiceCommunication householdServiceCommunication = new HouseholdServiceCommunication();
-        HouseholdPOJO householdPOJO = householdServiceCommunication.getHouseholdByHouseholdId(householdId);
+        HouseholdPOJO householdPOJO = householdServiceCommunication.getHouseholdByHouseholdId(householdId, sessionId);
         if(householdPOJO == null) {
             String message = "Could not find household with id: " + householdId;
             String url = "/invites/households" + householdId;
