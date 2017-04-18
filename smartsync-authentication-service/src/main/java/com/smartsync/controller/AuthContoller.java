@@ -43,7 +43,7 @@ public class AuthContoller {
      * @return session id for user
      */
     @RequestMapping(method = RequestMethod.GET, value = "/login", produces = "application/json")
-    public ResponseEntity logIn(@RequestHeader String googleId) {
+    public ResponseEntity logIn(@RequestHeader("googleId") String googleId) {
         logger.info("Just recieved login Attempt from: " + googleId);
         UserPOJO authUser = userServiceCommunication.getUserByGoogleId(googleId);
 
