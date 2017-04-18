@@ -25,6 +25,8 @@ handler()
     kill -9 $PID9
     echo "kill -9 $PID10"
     kill -9 $PID10
+    echo "kill -9 $PID11"
+    kill -9 $PID11
 }
 
 # Colors
@@ -114,7 +116,9 @@ if [ "$SS_BUILD" = true ] ; then
     cd ../smartsync-service-service
     echo -e "${C_YEL}cd smartsync-service-service; mvn package${C_NRM}"
     mvn package
-    cd ../
+    cd ../smartsync-authentication-service
+    echo -e "${C_YEL}cd smartsync-authentication-service; mvn package${C_NRM}"
+    mvn package
 fi
 
 echo -e "${C_YEL}java -jar smartsync-config-service/target/smartsync-config-service-0.0.1-SNAPSHOT.jar${C_NRM}"
@@ -165,6 +169,11 @@ echo -e "${C_YEL}java -jar smartsync-weather-service/target/smartsync-weather-se
 java -Xms64m -Xmx64m -jar smartsync-weather-service/target/smartsync-weather-service-0.0.1-SNAPSHOT.jar &
 PID9=$!
 echo $PID9
+
+echo -e "${C_YEL}java -jar smartsync-authentication-service/target/smartsync-authentication-service-0.0.1-SNAPSHOT.jar${C_NRM}"
+java -Xms64m -Xmx64m -jar smartsync-authentication-service/target/smartsync-authentication-service-0.0.1-SNAPSHOT.jar &
+PID11=$!
+echo $PID11
 
 #echo -e "${C_YEL}java -jar smartsync-service-service/target/smartsync-service-service-0.0.1-SNAPSHOT.jar${C_NRM}"
 #java -Xms64m -Xmx64m -jar smartsync-service-service/target/smartsync-service-service-0.0.1-SNAPSHOT.jar &
