@@ -166,9 +166,9 @@ java -Xms64m -Xmx64m -jar smartsync-weather-service/target/smartsync-weather-ser
 PID9=$!
 echo $PID9
 
-#echo -e "${C_YEL}java -jar smartsync-service-service/target/smartsync-service-service-0.0.1-SNAPSHOT.jar${C_NRM}"
-#java -Xms64m -Xmx64m -jar smartsync-service-service/target/smartsync-service-service-0.0.1-SNAPSHOT.jar &
-#PID10=$!
-#echo $PID10
+echo -e "${C_YEL}java -jar smartsync-service-service/target/smartsync-service-service-0.0.1-SNAPSHOT.jar${C_NRM}"
+java -Xms64m -Xmx64m -jar smartsync-service-service/target/smartsync-service-service-0.0.1-SNAPSHOT.jar &
+PID10=$!
+echo $PID10
 
 wait
