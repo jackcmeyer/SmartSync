@@ -1,6 +1,8 @@
 # SmartSync
 Don't live harder, live smarter. 
 
+THIS IS A TEST.
+
 ## To setup the project locally
 
 ### To Run SmartSync: 
